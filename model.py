@@ -28,9 +28,10 @@ from torchvision import datasets
 from torchvision import transforms
 
 # GLOBAL CONSTANTS
-INPUT_SIZE = 224
+INPUT_SIZE = 16
+BATCH_SIZE = 23598
 NUM_CLASSES = 185
-NUM_EPOCHS = 35
+NUM_EPOCHS = 100
 LEARNING_RATE = 1e-1
 USE_CUDA = torch.cuda.is_available()
 best_prec1 = 0
@@ -86,7 +87,7 @@ def train(train_loader, model, criterion, optimizer, epoch):
         batch_time.update(time.time() - end)
         end = time.time()
 
-        if i % 100 == 0:
+        if i % 1 == 0:
             print('Epoch: [{0}][{1}/{2}]\t'
                   '\Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
                   'Data {data_time.val:.3f} ({data_time.avg:.3f})\t'
@@ -102,8 +103,8 @@ def validate(val_loader, model, criterion):
     losses = AverageMeter()
     top1 = AverageMeter()
     top5 = AverageMeter()
-    class_correct = list(0. for i in range(185))
-    class_total = list(0. for i in range(185))
+    class_correct = list(0. for i in range(NUM_CLASSES))
+    class_total = list(0. for i in range(NUM_CLASSES))
 
     # switch to evaluate mode
     model.eval()
@@ -177,12 +178,14 @@ def accuracy(output, target, topk=(1,)):
         res.append(correct_k.mul_(100.0 / batch_size))
     return res
 
+###############################################################################
+
 print('\n[INFO] Creating Model')
-model = models.resnet101(pretrained=False)
-model.fc = nn.Linear(2048, 185)
+model = models.resnet18(pretrained=False)
 # model = VGG('VGG16')
 # model = resnet101()
 # model = densenet121()
+model.fc = nn.Linear(512, NUM_CLASSES)
 
 print('\n[INFO] Model Architecture: \n{}'.format(model))
 
@@ -192,6 +195,8 @@ if USE_CUDA:
     criterion = criterion.cuda()
 optimizer = optim.SGD(model.parameters(), lr=LEARNING_RATE,
                       momentum=0.9, weight_decay=1e-4, nesterov=True)
+#optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, betas=(0.9, 0.999), 
+#                       eps=1e-08, weight_decay=1e-4)
 
 if args.resume:
     if os.path.isfile(args.resume):
@@ -207,8 +212,8 @@ if args.resume:
         print("=> no checkpoint found at '{}'".format(args.resume))
 
 print('\n[INFO] Reading Training and Testing Dataset')
-traindir = os.path.join('dataset', 'train')
-testdir = os.path.join('dataset', 'test')
+traindir = os.path.join('dataset', 'train_%d'%INPUT_SIZE)
+testdir = os.path.join('dataset', 'test_%d'%INPUT_SIZE)
 normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                  std=[0.229, 0.224, 0.225])
 data_train = datasets.ImageFolder(traindir, transforms.Compose([
@@ -220,8 +225,8 @@ data_test = datasets.ImageFolder(testdir, transforms.Compose([
     normalize]))
 classes = data_train.classes
 
-train_loader = torch.utils.data.DataLoader(data_train, batch_size=64, shuffle=True, num_workers=2)
-val_loader = torch.utils.data.DataLoader(data_test, batch_size=64, shuffle=False, num_workers=2)
+train_loader = torch.utils.data.DataLoader(data_train, batch_size=BATCH_SIZE, shuffle=True, num_workers=0)
+val_loader = torch.utils.data.DataLoader(data_test, batch_size=BATCH_SIZE, shuffle=False, num_workers=0)
 
 print('\n[INFO] Training Started')
 for epoch in range(1, NUM_EPOCHS + 1):
