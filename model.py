@@ -28,10 +28,10 @@ from torchvision import datasets
 from torchvision import transforms
 
 # GLOBAL CONSTANTS
-INPUT_SIZE = 16
-BATCH_SIZE = 23598
+INPUT_SIZE = 64
+BATCH_SIZE = 1024
 NUM_CLASSES = 185
-NUM_EPOCHS = 100
+NUM_EPOCHS = 300
 LEARNING_RATE = 1e-1
 USE_CUDA = torch.cuda.is_available()
 best_prec1 = 0
