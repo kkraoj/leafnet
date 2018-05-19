@@ -21,7 +21,7 @@ from sklearn.model_selection import train_test_split
 # GLOBAL CONSTANTS
 DATA_FILE = 'leafsnap-dataset-images.csv'
 NUM_CLASSES = 185
-RESOLUTION = 64
+RESOLUTION = 224
 bad_lab_species = set(['Abies concolor', 'Abies nordmanniana', 'Picea pungens', 'Picea orientalis',
                        'Picea abies', 'Cedrus libani', 'Cedrus atlantica', 'Cedrus deodara',
                        'Juniperus virginiana', 'Tsuga canadensis', 'Larix decidua', 'Pseudolarix amabilis'])
@@ -112,9 +112,9 @@ def save_images(images, species, directory='train', csv_name='temp.csv', augment
     # df = pd.DataFrame(raw_data, columns = ['image_paths', 'species'])
     # df.to_csv(csv_name)
 
-save_images(images_train, species_train, directory='train',
+save_images(images_train, species_train, directory='train_%d'%RESOLUTION,
             csv_name='leafsnap-dataset-train-images.csv', augment=False)
-save_images(images_test, species_test, directory='test',
+save_images(images_test, species_test, directory='test_%d'%RESOLUTION,
             csv_name='leafsnap-dataset-test-images.csv', augment=False)
 
 print('\n[DONE]')

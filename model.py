@@ -1,3 +1,4 @@
+
 import argparse
 import cv2
 import json
@@ -28,8 +29,8 @@ from torchvision import datasets
 from torchvision import transforms
 
 # GLOBAL CONSTANTS
-INPUT_SIZE = 64
-BATCH_SIZE = 1024
+INPUT_SIZE = 224
+BATCH_SIZE = 128
 NUM_CLASSES = 185
 NUM_EPOCHS = 300
 LEARNING_RATE = 1e-1
