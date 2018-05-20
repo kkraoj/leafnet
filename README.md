@@ -1,3 +1,5 @@
+# < Original code from https://github.com/sujithv28/Deep-Leafsnap >
+
 # Deep-Leafsnap
 
 Convolutional Neural Networks have become largely popular in image tasks such as image classification recently largely due to to Krizhevsky, et al. in their famous paper [ImageNet Classification with Deep Convolutional Neural Networks](https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks). Famous models such as AlexNet, VGG-16, ResNet-50, etc. have scored state of the art results on image classfication datasets such as ImageNet and CIFAR-10.
