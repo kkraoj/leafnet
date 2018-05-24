@@ -17,6 +17,8 @@ import torch.optim as optim
 import torchvision
 import torchvision.models as models
 import utils
+import datetime
+import time
 
 from PIL import Image
 from averagemeter import *
@@ -44,9 +46,8 @@ parser.add_argument('--resume', default='', type=str, metavar='PATH',
                     help='path to latest checkpoint (default: none)')
 args = parser.parse_args()
 
+
 # Training method which trains model for 1 epoch
-
-
 def train(train_loader, model, criterion, optimizer, epoch):
     batch_time = AverageMeter()
     data_time = AverageMeter()
@@ -58,6 +59,13 @@ def train(train_loader, model, criterion, optimizer, epoch):
     model.train()
 
     end = time.time()
+
+    # Make file and write header
+    timestamp_string = time.strftime("%Y%m%d-%H%M%S") 
+    filename = './epoch_data/' + timestamp_string + '.txt'
+    with open(filename, 'a') as a:
+        a.write('#Epoch Time Data Loss Prec@1 Prec@5 \n')
+    
     for i, (input, target) in enumerate(train_loader):
         # measure data loading time
         if USE_CUDA:
@@ -96,7 +104,17 @@ def train(train_loader, model, criterion, optimizer, epoch):
                   'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
                   'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
                       epoch, i, len(train_loader), batch_time=batch_time,
-                      data_time=data_time, loss=losses, top1=top1, top5=top5))
+                      data_time=data_time, loss=losses, top1=top1, top5=top5)) 
+
+            with open(filename, 'a') as a:
+                a.write('{0}\t'
+                        '{batch_time.val:16.3f} \t'
+                        '{data_time.val:16.3f}\t'
+                        '{loss.val:16.4f}\t'
+                        '{top1.val:16.3f} \t'
+                        '{top5.val:16.3f}\n'.format(
+                            epoch, batch_time=batch_time,
+                            data_time=data_time, loss=losses, top1=top1, top5=top5))
 
 # Validation method
 def validate(val_loader, model, criterion):
