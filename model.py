@@ -64,7 +64,7 @@ def train(train_loader, model, criterion, optimizer, epoch):
     timestamp_string = time.strftime("%Y%m%d-%H%M%S") 
     filename = './epoch_data/' + timestamp_string + '.txt'
     with open(filename, 'a') as a:
-        a.write('#Epoch Time Data Loss Prec@1 Prec@5 \n')
+        a.write('#Epoch\t\ti\t\tTime\t\tData\t\tLoss\t\tPrec@1\t\tPrec@5 \n')
     
     for i, (input, target) in enumerate(train_loader):
         # measure data loading time
@@ -108,12 +108,13 @@ def train(train_loader, model, criterion, optimizer, epoch):
 
             with open(filename, 'a') as a:
                 a.write('{0}\t'
+                        '{1}'
                         '{batch_time.val:16.3f} \t'
                         '{data_time.val:16.3f}\t'
                         '{loss.val:16.4f}\t'
                         '{top1.val:16.3f} \t'
                         '{top5.val:16.3f}\n'.format(
-                            epoch, batch_time=batch_time,
+                            epoch, i, batch_time=batch_time,
                             data_time=data_time, loss=losses, top1=top1, top5=top5))
 
 # Validation method
