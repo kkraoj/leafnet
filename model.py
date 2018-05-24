@@ -64,7 +64,7 @@ def train(train_loader, model, criterion, optimizer, epoch):
     timestamp_string = time.strftime("%Y%m%d-%H%M%S") 
     filename = './epoch_data/' + timestamp_string + '.txt'
     with open(filename, 'a') as a:
-        a.write('#Epoch\t\ti\t\tTime\t\tData\t\tLoss\t\tPrec@1\t\tPrec@5 \n')
+        a.write('#Epoch  i\t\tTime\t\t  Data\t\t   Loss\t\t   Prec@1\t\t   Prec@5 \n')
     
     for i, (input, target) in enumerate(train_loader):
         # measure data loading time
