@@ -12,21 +12,22 @@ import sys
 #      - loss vs. time
 #      - prec@1 vs. time
 
-data_filename = sys.argv[-1]
+data_filename = "./epoch_data/" + sys.argv[-1]
 data = np.genfromtxt(data_filename)
+time = np.cumsum(data[2,:])
 
 plt.figure(1)
-plot(data[4,:], data[2,:])
+plt.plot(time, data[4,:])
 plt.title('Loss vs. time')
 plt.xlabel('time')
 plt.ylabel('loss')
-plt.savefig("./plots/." + data_filename + "_loss"+".png")
+plt.savefig("./plots/" + sys.argv[-1] + "_loss"+".png")
 
 plt.figure(2)
-plot(data[5,:], data[2,:])
+plt.plot(time, data[5,:])
 plt.title('Accuracy vs. time')
 plt.xlabel('time')
 plt.ylabel('prec@1')
-plt.savefig("./plots/." + data_filename + "_accuracy"+".png")
+plt.savefig("./plots/" + sys.argv[-1] + "_accuracy"+".png")
 
 plt.show()
