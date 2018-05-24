@@ -1,4 +1,3 @@
-
 import argparse
 import cv2
 import json
