@@ -33,15 +33,15 @@ from torchvision import transforms
 INPUT_SIZE = 224
 BATCH_SIZE = 128
 NUM_CLASSES = 185
-NUM_EPOCHS = 300
-LEARNING_RATE = 1e-1
+NUM_EPOCHS = 50
+LEARNING_RATE = 1e-4 #start from learning rate after 40 epochs
 USE_CUDA = torch.cuda.is_available()
 best_prec1 = 0
 classes = []
 
 # ARGS Parser
 parser = argparse.ArgumentParser(description='PyTorch LeafSnap Training')
-parser.add_argument('--resume', default='', type=str, metavar='PATH',
+parser.add_argument('--resume', required = True, type=str, metavar='PATH',
                     help='path to latest checkpoint (default: none)')
 args = parser.parse_args()
 
@@ -82,9 +82,9 @@ def train(train_loader, model, criterion, optimizer, epoch):
 
         # measure accuracy and record loss
         prec1, prec5 = accuracy(output.data, target, topk=(1, 5))
-        losses.update(loss.data[0], input.size(0))
-        top1.update(prec1[0], input.size(0))
-        top5.update(prec5[0], input.size(0))
+        losses.update(loss.item(), input.size(0))
+        top1.update(prec1.item(), input.size(0))
+        top5.update(prec5.item(), input.size(0))
 
         # compute gradient and do SGD step
         optimizer.zero_grad()
@@ -133,8 +133,9 @@ def validate(val_loader, model, criterion):
         if USE_CUDA:
             input = input.cuda(async=True)
             target = target.cuda(async=True)
-        input_var = torch.autograd.Variable(input, volatile=True)
-        target_var = torch.autograd.Variable(target, volatile=True)
+        with torch.no_grad(): 
+            input_var = torch.autograd.Variable(input)
+            target_var = torch.autograd.Variable(target)
 
         # compute output
         output = model(input_var)
@@ -142,9 +143,9 @@ def validate(val_loader, model, criterion):
 
         # measure accuracy and record loss
         prec1, prec5 = accuracy(output.data, target, topk=(1, 5))
-        losses.update(loss.data[0], input.size(0))
-        top1.update(prec1[0], input.size(0))
-        top5.update(prec5[0], input.size(0))
+        losses.update(loss.item(), input.size(0))
+        top1.update(prec1.item(), input.size(0))
+        top5.update(prec5.item(), input.size(0))
 
         # measure elapsed time
         batch_time.update(time.time() - end)
@@ -227,6 +228,7 @@ if args.resume:
         optimizer.load_state_dict(checkpoint['optimizer'])
         print("=> loaded checkpoint '{}' (epoch {})"
               .format(args.resume, checkpoint['epoch']))
+        print("=> Loaded model Prec1 = %0.2f%%"%best_prec1.item())
     else:
         print("=> no checkpoint found at '{}'".format(args.resume))
 
@@ -264,7 +266,7 @@ for epoch in range(1, NUM_EPOCHS + 1):
         'best_prec1': best_prec1,
         'optimizer': optimizer.state_dict(),
     }, is_best)
-    print('\n[INFO] Saved Model to leafsnap_model.pth')
+    print('\n[INFO] Saved Model to leafsnap_model.pth')    
     torch.save(model, 'leafsnap_model.pth')
 
 print('\n[DONE]')
