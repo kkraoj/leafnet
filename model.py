@@ -38,10 +38,10 @@ classes = []
 
 # ARGS Parser
 parser = argparse.ArgumentParser(description='PyTorch LeafSnap Training')
-#parser.add_argument('--resume', required = True, type=str, metavar='PATH',
-#                    help='path to latest checkpoint (default: none)')
+parser.add_argument('--resume', required = True, type=str, metavar='PATH',
+                    help='path to latest checkpoint (default: none)')
 args = parser.parse_args()
-args.resume = ""
+
 # Training method which trains model for 1 epoch
 def train(train_loader, model, criterion, optimizer, epoch):
     batch_time = AverageMeter()
@@ -202,6 +202,8 @@ def accuracy(output, target, topk=(1,), path = None, minibatch = None):
         pred_label = [classes[p] for p in pred[0]]
         data = np.array([filename, true_label, pred_label])
         out = pd.DataFrame(data.T,columns =['filename', 'true_label','pred_label'])
+        out.index.name = 'index'
+        out['correct?'] = out['pred_label']==out['true_label']
         out_file = 'predicted_labels.csv'
 
         if os.path.isfile(out_file):
