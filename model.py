@@ -15,9 +15,6 @@ import torch.nn.parallel
 import torch.optim as optim
 import torchvision
 import torchvision.models as models
-import utils
-import datetime
-import time
 
 from PIL import Image
 from averagemeter import *
@@ -41,11 +38,10 @@ classes = []
 
 # ARGS Parser
 parser = argparse.ArgumentParser(description='PyTorch LeafSnap Training')
-parser.add_argument('--resume', required = True, type=str, metavar='PATH',
-                    help='path to latest checkpoint (default: none)')
+#parser.add_argument('--resume', required = True, type=str, metavar='PATH',
+#                    help='path to latest checkpoint (default: none)')
 args = parser.parse_args()
-
-
+args.resume = ""
 # Training method which trains model for 1 epoch
 def train(train_loader, model, criterion, optimizer, epoch):
     batch_time = AverageMeter()
@@ -65,7 +61,9 @@ def train(train_loader, model, criterion, optimizer, epoch):
     with open(filename, 'a') as a:
         a.write('#Epoch  i\t\tTime\t\t  Data\t\t   Loss\t\t   Prec@1\t\t   Prec@5 \n')
     
-    for i, (input, target) in enumerate(train_loader):
+#    for i, (input, target) in enumerate(train_loader):
+    for i, data in enumerate(train_loader):
+        (input,target),(path,_) = data
         # measure data loading time
         if USE_CUDA:
             input = input.cuda(async=True)
@@ -81,7 +79,7 @@ def train(train_loader, model, criterion, optimizer, epoch):
         loss = criterion(output, target_var)
 
         # measure accuracy and record loss
-        prec1, prec5 = accuracy(output.data, target, topk=(1, 5))
+        prec1, prec5 = accuracy(output.data, target, topk=(1, 5), path=path, minibatch = i)
         losses.update(loss.item(), input.size(0))
         top1.update(prec1.item(), input.size(0))
         top5.update(prec5.item(), input.size(0))
@@ -129,6 +127,7 @@ def validate(val_loader, model, criterion):
     model.eval()
 
     end = time.time()
+    
     for i, (input, target) in enumerate(val_loader):
         if USE_CUDA:
             input = input.cuda(async=True)
@@ -183,7 +182,7 @@ def adjust_learning_rate(optimizer, epoch):
         param_group['lr'] = lr
 
 
-def accuracy(output, target, topk=(1,)):
+def accuracy(output, target, topk=(1,), path = None, minibatch = None):
     """Computes the precision@k for the specified values of k"""
     maxk = max(topk)
     batch_size = target.size(0)
@@ -196,7 +195,30 @@ def accuracy(output, target, topk=(1,)):
     for k in topk:
         correct_k = correct[:k].view(-1).float().sum(0)
         res.append(correct_k.mul_(100.0 / batch_size))
+    ## save mislabeled data
+    if path:
+        filename = [os.path.basename(p) for p in path]
+        true_label = [os.path.basename(os.path.dirname(p)) for p in path]
+        pred_label = [classes[p] for p in pred[0]]
+        data = np.array([filename, true_label, pred_label])
+        out = pd.DataFrame(data.T,columns =['filename', 'true_label','pred_label'])
+        out_file = 'predicted_labels.csv'
+
+        if os.path.isfile(out_file):
+            if minibatch==0: #if first minibatch, overwrite existing file
+                out.to_csv(out_file)
+            else:
+                df = pd.read_csv(out_file, index_col = 0)
+                df = pd.concat([df,out],axis = 0, ignore_index = True)
+                df.to_csv(out_file)
+        else: # if file does not exist, make file
+            out.to_csv(out_file)
+    
     return res
+
+class MyImageFolder(datasets.ImageFolder): #return image path and loader
+    def __getitem__(self, index):
+        return super(MyImageFolder, self).__getitem__(index), self.imgs[index]
 
 ###############################################################################
 
@@ -207,7 +229,7 @@ model = models.resnet18(pretrained=False)
 # model = densenet121()
 model.fc = nn.Linear(512, NUM_CLASSES)
 
-print('\n[INFO] Model Architecture: \n{}'.format(model))
+#print('\n[INFO] Model Architecture: \n{}'.format(model))
 
 criterion = nn.CrossEntropyLoss()
 if USE_CUDA:
@@ -237,17 +259,18 @@ traindir = os.path.join('dataset', 'train_%d'%INPUT_SIZE)
 testdir = os.path.join('dataset', 'test_%d'%INPUT_SIZE)
 normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                  std=[0.229, 0.224, 0.225])
-data_train = datasets.ImageFolder(traindir, transforms.Compose([
-    transforms.RandomHorizontalFlip(),
-    transforms.ToTensor(),
-    normalize]))
+data_train = MyImageFolder(traindir, transforms.Compose([
+            transforms.RandomHorizontalFlip(),
+            transforms.ToTensor(),
+            normalize]))
 data_test = datasets.ImageFolder(testdir, transforms.Compose([
-    transforms.ToTensor(),
-    normalize]))
+            transforms.ToTensor(),
+            normalize]))
 classes = data_train.classes
+classes_test = data_test.classes
 
 train_loader = torch.utils.data.DataLoader(data_train, batch_size=BATCH_SIZE, shuffle=True, num_workers=4)
-val_loader = torch.utils.data.DataLoader(data_test, batch_size=BATCH_SIZE, shuffle=False, num_workers=4)
+val_loader = torch.utils.data.DataLoader(data_test, batch_size=BATCH_SIZE, shuffle=False, num_workers=4) 
 
 print('\n[INFO] Training Started')
 for epoch in range(1, NUM_EPOCHS + 1):
