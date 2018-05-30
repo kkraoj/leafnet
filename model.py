@@ -28,10 +28,10 @@ from torchvision import transforms
 
 # GLOBAL CONSTANTS
 INPUT_SIZE = 224
-BATCH_SIZE = 128
+BATCH_SIZE = 32
 NUM_CLASSES = 185
-NUM_EPOCHS = 50
-LEARNING_RATE = 1e-4 #start from learning rate after 40 epochs
+NUM_EPOCHS = 300
+LEARNING_RATE = 1e-1 #start from learning rate after 40 epochs
 USE_CUDA = torch.cuda.is_available()
 best_prec1 = 0
 classes = []
@@ -225,13 +225,12 @@ class MyImageFolder(datasets.ImageFolder): #return image path and loader
 ###############################################################################
 
 print('\n[INFO] Creating Model')
-model = models.resnet18(pretrained=False)
+# model = models.resnet18(pretrained=False)
 # model = VGG('VGG16')
-# model = resnet101()
+model = models.resnet101(pretrained = False)
 # model = densenet121()
-model.fc = nn.Linear(512, NUM_CLASSES)
-
-#print('\n[INFO] Model Architecture: \n{}'.format(model))
+model.fc = nn.Linear(2048, NUM_CLASSES)
+# print('\n[INFO] Model Architecture: \n{}'.format(model))
 
 criterion = nn.CrossEntropyLoss()
 if USE_CUDA:
