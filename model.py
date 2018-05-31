@@ -42,6 +42,17 @@ parser.add_argument('--resume', required = True, type=str, metavar='PATH',
                     help='path to latest checkpoint (default: none)')
 args = parser.parse_args()
 
+# Make data files and write headers
+timestamp_string = time.strftime("%Y%m%d-%H%M%S") 
+filename_train = './data_train/' + timestamp_string + '_train' + INPUT_SIZE + '.txt'
+filename_dev = './data_dev/' + timestamp_string + '_dev' + INPUT_SIZE + '.txt'
+
+with open(filename_train, 'a') as a:
+    a.write('#Epoch  i\t\tTime\t\t  Data\t\t   Loss\t\t   Prec@1\t\t   Prec@5 \n')
+
+with open(filename_dev, 'b') as b:
+    b.write('#Epoch  i\t\tTime\t\t  Data\t\t   Loss\t\t   Prec@1\t\t   Prec@5 \n')
+
 # Training method which trains model for 1 epoch
 def train(train_loader, model, criterion, optimizer, epoch):
     batch_time = AverageMeter()
@@ -54,12 +65,6 @@ def train(train_loader, model, criterion, optimizer, epoch):
     model.train()
 
     end = time.time()
-
-    # Make file and write header
-    timestamp_string = time.strftime("%Y%m%d-%H%M%S") 
-    filename = './epoch_data/' + timestamp_string + '.txt'
-    with open(filename, 'a') as a:
-        a.write('#Epoch  i\t\tTime\t\t  Data\t\t   Loss\t\t   Prec@1\t\t   Prec@5 \n')
     
 #    for i, (input, target) in enumerate(train_loader):
     for i, data in enumerate(train_loader):
@@ -103,7 +108,7 @@ def train(train_loader, model, criterion, optimizer, epoch):
                       epoch, i, len(train_loader), batch_time=batch_time,
                       data_time=data_time, loss=losses, top1=top1, top5=top5)) 
 
-            with open(filename, 'a') as a:
+            with open(filename_train, 'a') as a:
                 a.write('{0}\t'
                         '{1}'
                         '{batch_time.val:16.3f} \t'
@@ -158,6 +163,16 @@ def validate(val_loader, model, criterion):
                   'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
                       i, len(val_loader), batch_time=batch_time, loss=losses,
                       top1=top1, top5=top5))
+            with open(filename_dev, 'b') as b:
+                b.write('{0}\t'
+                        '{1}'
+                        '{batch_time.val:16.3f} \t'
+                        '{data_time.val:16.3f}\t'
+                        '{loss.val:16.4f}\t'
+                        '{top1.val:16.3f} \t'
+                        '{top5.val:16.3f}\n'.format(
+                            epoch, i, batch_time=batch_time,
+                            data_time=data_time, loss=losses, top1=top1, top5=top5))
 
     print(' * Prec@1 {top1.avg:.3f} Prec@5 {top5.avg:.3f}'
           .format(top1=top1, top5=top5))
