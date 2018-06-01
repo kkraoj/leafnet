@@ -46,14 +46,14 @@ args = parser.parse_args()
 
 # Model selection function 
 def selectModel(MODEL_ID):
-    if (MODEL_ID == 1)
+    if MODEL_ID == 1:
         model = models.resnet18(pretrained=False)
         model.fc = nn.Linear(512, NUM_CLASSES)
         modelName = "resnet18"
-    else if (MODEL_ID == 2)
+    else if MODEL_ID == 2:
         model = VGG('VGG16')
         modelName = "VGG16"
-    else if (MODEL_ID == 2)
+    else if MODEL_ID == 3:
         model = resnet101()
         model.fc = nn.Linear(2048, NUM_CLASSES)
         modelName = "resnet101"
@@ -252,7 +252,6 @@ class MyImageFolder(datasets.ImageFolder): #return image path and loader
 print('\n[INFO] Creating Model')
 model, modelName = selectModel(MODEL_ID)
 
-# Define loss
 criterion = nn.CrossEntropyLoss()
 if USE_CUDA:
     model = torch.nn.DataParallel(model).cuda()
