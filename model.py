@@ -40,7 +40,7 @@ classes = []
 
 # ARGS Parser
 parser = argparse.ArgumentParser(description='PyTorch LeafSnap Training')
-parser.add_argument('--resume', required = True, type=str, metavar='PATH',
+parser.add_argument('--resume', required = False, type=str, metavar='PATH',
                     help='path to latest checkpoint (default: none)')
 args = parser.parse_args()
 
