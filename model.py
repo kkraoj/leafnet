@@ -128,7 +128,7 @@ def train(train_loader, model, criterion, optimizer, epoch):
 
             with open(filename_train, 'a') as a:
                     a.write('{0}\t'
-                            '{1}'
+                            '{1}\t'
                             '{batch_time.val:16.3f} \t'
                             '{data_time.val:16.3f}\t'
                             '{loss.val:16.4f}\t'
@@ -174,22 +174,23 @@ def validate(val_loader, model, criterion):
         end = time.time()
 
         if i % 10 == 0:
-            print('Test: [{0}/{1}]\t'
+            print('Test: [{0}][{1}/{2}]\t'
                   'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
                   'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
                   'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
                   'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
-                      i, len(val_loader), batch_time=batch_time, loss=losses,
+                      epoch, i, len(val_loader), batch_time=batch_time, loss=losses,
                       top1=top1, top5=top5))
             
-            with open(filename_dev, 'a') as a:
-                    a.write('{0}\t'
-                            '{batch_time.val:16.3f} \t'
-                            '{loss.val:16.4f}\t'
-                            '{top1.val:16.3f} \t'
-                            '{top5.val:16.3f}\n'.format(
-                                i, batch_time=batch_time,
-                                loss=losses, top1=top1, top5=top5))
+        with open(filename_dev, 'a') as a:
+                a.write('{0}\t'
+                        '{1}\t'
+                        '{batch_time.val:16.3f} \t'
+                        '{loss.val:16.4f}\t'
+                        '{top1.val:16.3f} \t'
+                        '{top5.val:16.3f}\n'.format(
+                            epoch, i, batch_time=batch_time,
+                            loss=losses, top1=top1, top5=top5))
 
     print(' * Prec@1 {top1.avg:.3f} Prec@5 {top5.avg:.3f}'
           .format(top1=top1, top5=top5))
