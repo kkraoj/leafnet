@@ -51,14 +51,14 @@ def selectModel(MODEL_ID):
         model.fc = nn.Linear(512, NUM_CLASSES)
         modelName = "resnet18"
     else if MODEL_ID == 2:
-        model = VGG('VGG16')
+        model = models.VGG('VGG16')
         modelName = "VGG16"
     else if MODEL_ID == 3:
-        model = resnet101()
+        model = models.resnet101()
         model.fc = nn.Linear(2048, NUM_CLASSES)
         modelName = "resnet101"
     else
-        model = densenet121()
+        model = models.densenet121()
         modelName = "densenet121"
     return model, modelName
 
