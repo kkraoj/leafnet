@@ -57,7 +57,7 @@ def selectModel(MODEL_ID):
         model = models.resnet101()
         model.fc = nn.Linear(2048, NUM_CLASSES)
         modelName = "resnet101"
-    else
+    else:
         model = models.densenet121()
         modelName = "densenet121"
     return model, modelName
