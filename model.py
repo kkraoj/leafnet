@@ -50,10 +50,10 @@ def selectModel(MODEL_ID):
         model = models.resnet18(pretrained=False)
         model.fc = nn.Linear(512, NUM_CLASSES)
         modelName = "resnet18"
-    else if MODEL_ID == 2:
+    elif MODEL_ID == 2:
         model = models.VGG('VGG16')
         modelName = "VGG16"
-    else if MODEL_ID == 3:
+    elif MODEL_ID == 3:
         model = models.resnet101()
         model.fc = nn.Linear(2048, NUM_CLASSES)
         modelName = "resnet101"
