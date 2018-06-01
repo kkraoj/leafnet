@@ -1,3 +1,4 @@
+
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
@@ -5,7 +6,7 @@ import sys
 # rc('text', usetex=True)
 
 #TO RUN THIS SCRIPT: 
-#      $python plotter.py dataAndPlots/fileName.txt dataAndPlots/fileName.txt
+#      $python plotter.py dataAndPlots/fileName_dev.txt dataAndPlots/fileName_train.txt
 
 #This file will generate the following plots and 
 #store them in the folder "dataAndPlots" with 
