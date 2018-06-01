@@ -19,8 +19,11 @@ import sys
 data_dev = np.genfromtxt("./" + sys.argv[-2])
 data_train = np.genfromtxt("./" + sys.argv[-1]) #sys.argv[-1] looks at last terminal input 
 its_train = data_train[:,1] #iterations
-batch_size_train = np.max(its) + 1
+its_dev = data_dev[:,1] #iterations
+batch_size_train = np.max(its_train) + 1
+batch_size_dev = np.max(its_dev) + 1
 epochs_train = data_train[:,0] + its_train/batch_size_train
+epochs_dev = data_dev[:,0] + its_dev/batch_size_dev
 loss_train = data_train[:,4]
 loss_dev = data_dev[:,3]
 acc_train = data_train[:,5]
@@ -30,7 +33,7 @@ acc_dev = data_dev[:,4]
 plt.figure(1)
 plt.subplot(1,2,1)
 plt.plot(epochs_train, loss_train,label='train')
-plt.plot(data_dev[:,0]/50,loss_dev,label='dev')
+plt.plot(epochs_dev,loss_dev,label='dev')
 plt.legend(loc='best')
 plt.xticks(range(1,1+int(max(data_train[:,0]))))
 plt.xlabel('epoch')
