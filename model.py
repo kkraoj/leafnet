@@ -27,13 +27,8 @@ from torchvision import datasets
 from torchvision import transforms
 
 # GLOBAL CONSTANTS
-MODEL_ID = 1 # CHANGE MODEL_ID VALUE TO SELECT THE MODEL to use!
 INPUT_SIZE = 224
-BATCH_SIZE = 128 #8 for resnet101
 NUM_CLASSES = 185
-NUM_EPOCHS = 50
-LEARNING_RATE = 1e-5 #start from learning rate after 40 epochs
-ALPHA = 6
 
 USE_CUDA = torch.cuda.is_available()
 best_prec1 = 0
@@ -51,20 +46,38 @@ args = parser.parse_args()
 # Model selection function 
 def selectModel(MODEL_ID):
     if MODEL_ID == 1:
+        BATCH_SIZE = 128
+        NUM_EPOCHS = 250
+        LEARNING_RATE = 1e-5 #start from learning rate after 40 epochs
+        ALPHA = 6
         model = models.resnet18(pretrained=False)
         model.fc = nn.Linear(512, NUM_CLASSES)
         modelName = "resnet18"
     elif MODEL_ID == 2:
+        # BATCH_SIZE = 128
+        # NUM_EPOCHS = 250
+        # LEARNING_RATE = 1e-5 #start from learning rate after 40 epochs
+        # ALPHA = 6
         model = models.VGG('VGG16')
+        # model.fc = nn.Linear(512, NUM_CLASSES)
         modelName = "VGG16"
     elif MODEL_ID == 3:
+        # BATCH_SIZE = 128
+        # NUM_EPOCHS = 250
+        # LEARNING_RATE = 1e-5 #start from learning rate after 40 epochs
+        # ALPHA = 6
         model = models.resnet101()
         model.fc = nn.Linear(2048, NUM_CLASSES)
         modelName = "resnet101"
     else:
+        BATCH_SIZE = 8
+        # NUM_EPOCHS = 250
+        # LEARNING_RATE = 1e-5 #start from learning rate after 40 epochs
+        # ALPHA = 6
         model = models.densenet121()
+        # model.fc = nn.Linear(512, NUM_CLASSES)
         modelName = "densenet121"
-    return model, modelName
+    return model, modelName, BATCH_SIZE, NUM_EPOCHS, LEARNING_RATE, ALPHA
 
 # Create data file with header
 def createHeadertxt_train(modelName, INPUT_SIZE, filename):
@@ -261,7 +274,7 @@ class MyImageFolder(datasets.ImageFolder): #return image path and loader
 ###############################################################################
 
 print('\n[INFO] Creating Model')
-model, modelName = selectModel(MODEL_ID)
+model, modelName, BATCH_SIZE, NUM_EPOCHS, LEARNING_RATE, ALPHA = selectModel(MODEL_ID)
 
 criterion = nn.CrossEntropyLoss()
 if USE_CUDA:

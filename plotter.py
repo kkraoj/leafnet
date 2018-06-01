@@ -2,8 +2,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
-# from matplotlib import rc
-# rc('text', usetex=True)
+from matplotlib import rc
+rc('text', usetex=True)
 
 #TO RUN THIS SCRIPT: 
 #      $python plotter.py dataAndPlots/fileName_dev.txt dataAndPlots/fileName_train.txt
