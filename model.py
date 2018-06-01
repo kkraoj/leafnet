@@ -293,10 +293,10 @@ classes_test = data_test.classes
 train_loader = torch.utils.data.DataLoader(data_train, batch_size=BATCH_SIZE, shuffle=True, num_workers=4)
 val_loader = torch.utils.data.DataLoader(data_test, batch_size=BATCH_SIZE, shuffle=False, num_workers=4) 
 
-# Make data files and write headers
+print('\n[INFO] Preparing files to save training data')
 timestamp_string = time.strftime("%Y%m%d-%H%M%S") 
-filename_train = './data_train/' + timestamp_string + '_train' + '_' + modelName + '_' + INPUT_SIZE + '.txt'
-filename_dev = './data_dev/' + timestamp_string + '_dev' + '_' + modelName + '_' + INPUT_SIZE + '.txt'
+filename_train = './data_train/' + timestamp_string + '_train' + '_' + modelName + '_' + str(INPUT_SIZE) + '.txt'
+filename_dev = './data_dev/' + timestamp_string + '_dev' + '_' + modelName + '_' + str(INPUT_SIZE) + '.txt'
 createHeadertxt(modelName, INPUT_SIZE, filename_train)
 createHeadertxt(modelName, INPUT_SIZE, filename_dev)
 
