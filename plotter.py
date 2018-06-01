@@ -1,4 +1,3 @@
-
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
@@ -7,10 +6,12 @@ import sys
 #      $python plotter.py datafile.txt
 
 #This file will generate the following plots and 
-#store them in the folder "performance_plots" with 
+#store them in the folder "plots" with 
 #the same name as the datafile:
-#      - loss vs. time
-#      - prec@1 vs. time
+#      - loss vs. epoch
+#      - prec@1 vs. epoch
+#
+#For both training and dev
 
 data_filename = "./epoch_data/" + sys.argv[-1]
 data = np.genfromtxt(data_filename)
