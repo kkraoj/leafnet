@@ -65,11 +65,11 @@ def selectModel(MODEL_ID):
 # Create data file with header
 def createHeadertxt_train(modelName, INPUT_SIZE, filename):
     with open(filename, 'a') as a:
-        a.write('Epoch   i\t\t   Time\t\t            Data\t\t   Loss\t\t\t   Prec@1\t\t   Prec@5 \n')
+        a.write('Epoch   i\t\t   Time\t\t            Data\t\t\t   Loss\t\t\t   Prec@1\t\t   Prec@5 \n')
 
 def createHeadertxt_dev(modelName, INPUT_SIZE, filename):
     with open(filename, 'a') as a:
-        a.write('Epoch   i\t\t    Time\t\t    Loss\t\t   Prec@1\t\t   Prec@5 \n')
+        a.write('Epoch   i\t\t    Time\t\t\t    Loss\t\t   Prec@1\t\t   Prec@5 \n')
     
 # Training method which trains model for 1 epoch
 def train(train_loader, model, criterion, optimizer, epoch):
@@ -127,7 +127,7 @@ def train(train_loader, model, criterion, optimizer, epoch):
                       data_time=data_time, loss=losses, top1=top1, top5=top5)) 
 
             with open(filename_train, 'a') as a:
-                    a.write('{0}\t'
+                    a.write('{0}\t\t'
                             '{1}\t'
                             '{batch_time.val:16.3f} \t'
                             '{data_time.val:16.3f}\t'
@@ -183,7 +183,7 @@ def validate(val_loader, model, criterion):
                       top1=top1, top5=top5))
             
         with open(filename_dev, 'a') as a:
-                a.write('{0}\t'
+                a.write('{0}\t\t'
                         '{1}\t'
                         '{batch_time.val:16.3f} \t'
                         '{loss.val:16.4f}\t'
