@@ -27,12 +27,13 @@ from torchvision import datasets
 from torchvision import transforms
 
 # GLOBAL CONSTANTS
-modelID = 1 # CHANGE modelID VALUE TO SELECT THE MODEL to use!
+MODEL_ID = 1 # CHANGE MODEL_ID VALUE TO SELECT THE MODEL to use!
 INPUT_SIZE = 224
 BATCH_SIZE = 128
 NUM_CLASSES = 185
 NUM_EPOCHS = 50
 LEARNING_RATE = 1e-4 #start from learning rate after 40 epochs
+
 USE_CUDA = torch.cuda.is_available()
 best_prec1 = 0
 classes = []
@@ -44,15 +45,15 @@ parser.add_argument('--resume', required = True, type=str, metavar='PATH',
 args = parser.parse_args()
 
 # Model selection function 
-def selectModel(modelID):
-    if (modelID == 1)
+def selectModel(MODEL_ID):
+    if (MODEL_ID == 1)
         model = models.resnet18(pretrained=False)
         model.fc = nn.Linear(512, NUM_CLASSES)
         modelName = "resnet18"
-    else if (modelID == 2)
+    else if (MODEL_ID == 2)
         model = VGG('VGG16')
         modelName = "VGG16"
-    else if (modelID == 2)
+    else if (MODEL_ID == 2)
         model = resnet101()
         model.fc = nn.Linear(2048, NUM_CLASSES)
         modelName = "resnet101"
@@ -249,7 +250,7 @@ class MyImageFolder(datasets.ImageFolder): #return image path and loader
 ###############################################################################
 
 print('\n[INFO] Creating Model')
-model, modelName = selectModel(modelID)
+model, modelName = selectModel(MODEL_ID)
 
 # Define loss
 criterion = nn.CrossEntropyLoss()
