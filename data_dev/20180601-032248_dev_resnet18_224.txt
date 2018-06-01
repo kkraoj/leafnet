@@ -1,0 +1,1 @@
+#Epoch  i		Time		  Data		   Loss		   Prec@1		   Prec@5 
