@@ -1,4 +1,4 @@
-Epoch   i		   Time		            Data		   Loss			   Prec@1		   Prec@5 
+#Epoch   i		   Time		            Data		   Loss			   Prec@1		   Prec@5 
 1	0	           1.322 	           0.657	          5.4340	           0.781 	           2.344
 1	1	           0.860 	           0.306	          5.3487	           0.000 	           3.125
 1	2	           0.881 	           0.327	          5.3882	           0.781 	           3.906

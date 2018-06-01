@@ -45,7 +45,7 @@ parser = argparse.ArgumentParser(description='PyTorch LeafSnap Training')
 parser.add_argument('--resume', required = True, type=str, metavar='PATH',
                     help='path to latest checkpoint (default: none)')
 parser.add_argument('--modelid', required = True, type=int, metavar='MODEL_ID',
-                    help='path to latest checkpoint (default: none)')
+                    help='1(resnet18), 2(VGG16), 3(resnet101), 4(densenet121)')
 args = parser.parse_args()
 
 # Model selection function 
