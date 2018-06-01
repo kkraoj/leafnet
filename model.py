@@ -39,8 +39,11 @@ best_prec1 = 0
 classes = []
 
 # ARGS Parser
+# when you don't want to pass a checkpoint: --resume ""
 parser = argparse.ArgumentParser(description='PyTorch LeafSnap Training')
-parser.add_argument('--resume', required = False, type=str, metavar='PATH',
+parser.add_argument('--resume', required = True, type=str, metavar='PATH',
+                    help='path to latest checkpoint (default: none)')
+parser.add_argument('--modelid', required = True, type=int, metavar='MODEL_ID',
                     help='path to latest checkpoint (default: none)')
 args = parser.parse_args()
 
