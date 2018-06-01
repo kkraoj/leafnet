@@ -5,10 +5,10 @@ import sys
 # rc('text', usetex=True)
 
 #TO RUN THIS SCRIPT: 
-#      $python plotter.py data_dev/fileName.txt data_train/fileName.txt
+#      $python plotter.py dataAndPlots/fileName.txt dataAndPlots/fileName.txt
 
 #This file will generate the following plots and 
-#store them in the folder "plots" with 
+#store them in the folder "dataAndPlots" with 
 #the same name as the datafile:
 #      - loss vs. epoch
 #      - prec@1 vs. epoch
@@ -18,13 +18,13 @@ import sys
 #Data to plot
 data_dev = np.genfromtxt("./" + sys.argv[-2])
 data_train = np.genfromtxt("./" + sys.argv[-1]) #sys.argv[-1] looks at last terminal input 
-its = data_train[:,1] #iterations
-batch_size = np.max(its) + 1
-epochs_train = data_train[:,0] + its/batch_size
+its_train = data_train[:,1] #iterations
+batch_size_train = np.max(its) + 1
+epochs_train = data_train[:,0] + its_train/batch_size_train
 loss_train = data_train[:,4]
-loss_dev = data_dev[:,2] #!!!!!!!!!!!!!!! Change for new dev info files
+loss_dev = data_dev[:,3]
 acc_train = data_train[:,5]
-acc_dev = data_dev[:,3] #!!!!!!!!!!!!!!! Change for new dev info files
+acc_dev = data_dev[:,4] 
 
 #Loss vs. Epoch
 plt.figure(1)

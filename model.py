@@ -303,8 +303,8 @@ val_loader = torch.utils.data.DataLoader(data_test, batch_size=BATCH_SIZE, shuff
 
 print('\n[INFO] Preparing txt files to save epoch data')
 timestamp_string = time.strftime("%Y%m%d-%H%M%S") 
-filename_train = './data_train/' + timestamp_string + '_train' + '_' + modelName + '_' + str(INPUT_SIZE) + '.txt'
-filename_dev = './data_dev/' + timestamp_string + '_dev' + '_' + modelName + '_' + str(INPUT_SIZE) + '.txt'
+filename_train = './dataAndPlots/' + timestamp_string + '_train' + '_' + modelName + '_' + str(INPUT_SIZE) + '.txt'
+filename_dev = './dataAndPlots/' + timestamp_string + '_dev' + '_' + modelName + '_' + str(INPUT_SIZE) + '.txt'
 createHeadertxt_train(modelName, INPUT_SIZE, filename_train)
 createHeadertxt_dev(modelName, INPUT_SIZE, filename_dev)
 
