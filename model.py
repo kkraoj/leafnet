@@ -64,13 +64,13 @@ def selectModel(MODEL_ID):
 
 # Create data file with header
 def createHeadertxt(modelName, INPUT_SIZE, filename):
-    with open(filename, 'b') as b:
-        b.write('#Epoch  i\t\tTime\t\t  Data\t\t   Loss\t\t   Prec@1\t\t   Prec@5 \n')
+    with open(filename, 'a') as a:
+        a.write('#Epoch  i\t\tTime\t\t  Data\t\t   Loss\t\t   Prec@1\t\t   Prec@5 \n')
 
 # Save epoch data to txt
 def saveEpochData2txt(filename):
-    with open(filename, 'b') as b:
-                    b.write('{0}\t'
+    with open(filename, 'a') as a:
+                    a.write('{0}\t'
                             '{1}'
                             '{batch_time.val:16.3f} \t'
                             '{data_time.val:16.3f}\t'
