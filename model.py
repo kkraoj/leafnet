@@ -32,7 +32,8 @@ INPUT_SIZE = 224
 BATCH_SIZE = 128
 NUM_CLASSES = 185
 NUM_EPOCHS = 50
-LEARNING_RATE = 1e-4 #start from learning rate after 40 epochs
+LEARNING_RATE = 1e-5 #start from learning rate after 40 epochs
+ALPHA = 6
 
 USE_CUDA = torch.cuda.is_available()
 best_prec1 = 0
@@ -210,8 +211,8 @@ def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
 
 def adjust_learning_rate(optimizer, epoch):
     """Sets the learning rate to the initial LR decayed by 10 every 30 epochs"""
-    lr = LEARNING_RATE * (0.1 ** (epoch // 6))
-    if (lr <= 0.0001):
+    lr = LEARNING_RATE ** (epoch // ALPHA))
+    if (lr <= 0.0001): # cap the learning rate to be larger than e-4
         lr = 0.0001
     print('\n[Learning Rate] {:0.6f}'.format(lr))
     for param_group in optimizer.param_groups:
