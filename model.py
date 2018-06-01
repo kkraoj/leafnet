@@ -65,11 +65,11 @@ def selectModel(MODEL_ID):
 # Create data file with header
 def createHeadertxt_train(modelName, INPUT_SIZE, filename):
     with open(filename, 'a') as a:
-        a.write('#Epoch  i\t   Time\t\t     Data\t\t\t   Loss\t\t\t     Prec@1\t\t\t   Prec@5 \n')
+        a.write('Epoch   i\t\t   Time\t\t     Data\t\t\t   Loss\t\t\t     Prec@1\t\t   Prec@5 \n')
 
 def createHeadertxt_dev(modelName, INPUT_SIZE, filename):
     with open(filename, 'a') as a:
-        a.write('i\t\t    Time\t\t    Loss\t\t   Prec@1\t\t   Prec@5 \n')
+        a.write('Epoch   i\t\t    Time\t\t    Loss\t\t   Prec@1\t\t   Prec@5 \n')
     
 # Training method which trains model for 1 epoch
 def train(train_loader, model, criterion, optimizer, epoch):
