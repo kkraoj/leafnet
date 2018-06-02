@@ -43,6 +43,8 @@ parser.add_argument('--modelid', required = True, type=int, metavar='MODEL_ID',
                     help='1(resnet18), 2(VGG16), 3(resnet101), 4(densenet121)')
 args = parser.parse_args()
 
+MODEL_ID = sys.argv[-1]
+
 # Model selection function 
 def selectModel(MODEL_ID):
     if MODEL_ID == 1:
