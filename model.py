@@ -223,7 +223,7 @@ def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
 
 def adjust_learning_rate(optimizer, epoch):
     """Sets the learning rate to the initial LR decayed by 10 every 30 epochs"""
-    lr = LEARNING_RATE ** (epoch // ALPHA))
+    lr = LEARNING_RATE ** (epoch // ALPHA)
     if (lr <= 0.0001): # cap the learning rate to be larger than e-4
         lr = 0.0001
     print('\n[Learning Rate] {:0.6f}'.format(lr))
