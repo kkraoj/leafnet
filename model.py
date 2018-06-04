@@ -36,7 +36,7 @@ classes = []
 
 #TODO 
 #   1) if you stop half way trough an epoc, save last average values
-#   2) make predicted_labels include the same timestamp as the data
+#   2) make predicted_labels include the same timestamp as the data and save them in the same folder
 
 # ARGS Parser
 # when you don't want to pass a checkpoint: --resume ""
@@ -87,11 +87,11 @@ def selectModel(MODEL_ID):
 # Create data file with header
 def createHeadertxt_train(modelName, INPUT_SIZE, filename):
     with open(filename, 'a') as a:
-        a.write('#Epoch\t\t   Time\t\t            Data\t\t\t   Loss\t\t\t   Prec@1\t\t   Prec@5 \n')
+        a.write('#Epoch\t\t   Time\t\t            Data\t\t   Loss\t\t\t\t   Prec@1\t   Prec@5 \n')
 
 def createHeadertxt_dev(modelName, INPUT_SIZE, filename):
     with open(filename, 'a') as a:
-        a.write('#Epoch\t\t    Time\t\t\t    Loss\t\t   Prec@1\t\t   Prec@5 \n')
+        a.write('#Epoch\t\t    Time\t\t    Loss\t\t   Prec@1\t\t   Prec@5 \n')
     
 # Training method which trains model for 1 epoch
 def train(train_loader, model, criterion, optimizer, epoch):
