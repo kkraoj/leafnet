@@ -34,17 +34,19 @@ USE_CUDA = torch.cuda.is_available()
 best_prec1 = 0
 classes = []
 
-MODEL_ID = 1
+#TODO 
+#   1) if you stop half way trough an epoc, save last average values
+#   2) make predicted_labels include the same timestamp as the data
 
 # ARGS Parser
 # when you don't want to pass a checkpoint: --resume ""
 parser = argparse.ArgumentParser(description='PyTorch LeafSnap Training')
-parser.add_argument('--resume', required = True, type=str, metavar='PATH',
+parser.add_argument('--resume', required = False, type=str, metavar='PATH',
                     help='path to latest checkpoint (default: none)')
 parser.add_argument('--modelid', required = True, type=int, metavar='MODEL_ID',
                     help='1(resnet18), 2(VGG16), 3(resnet101), 4(densenet121)')
 args = parser.parse_args()
-
+MODEL_ID = args.modelid 
 
 # Model selection function 
 def selectModel(MODEL_ID):
@@ -146,7 +148,7 @@ def train(train_loader, model, criterion, optimizer, epoch):
                       epoch, i, len(train_loader), batch_time=batch_time,
                       data_time=data_time, loss=losses, top1=top1, top5=top5)) 
 
-        if i == len(train_loader):
+        if i == (len(train_loader)-1):
             with open(filename_train, 'a') as a:
                     a.write('{0}\t'
                             '{batch_time.avg:16.3f}\t'
@@ -201,7 +203,7 @@ def validate(val_loader, model, criterion):
                   'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
                       epoch, i, len(val_loader), batch_time=batch_time, loss=losses,
                       top1=top1, top5=top5))
-        if i == len(val_loader):    
+        if i == (len(val_loader)-1):    
             with open(filename_dev, 'a') as a:
                     a.write('{0}\t'
                             '{batch_time.avg:16.3f}\t'
