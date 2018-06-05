@@ -229,8 +229,8 @@ def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
 def adjust_learning_rate(optimizer, epoch):
     """Sets the learning rate to the initial LR decayed by 10 every 30 epochs"""
     lr = LEARNING_RATE*0.1** (epoch // ALPHA)
-    if (lr <= 0.0001): # cap the learning rate to be larger than e-4
-        lr = 0.0001
+    if (lr <= 1e-4): # cap the learning rate to be larger than e-4
+        lr = 1e-4
     print('\n[Learning Rate] {:0.6f}'.format(lr))
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
@@ -300,7 +300,7 @@ if args.resume:
         optimizer.load_state_dict(checkpoint['optimizer'])
         print("=> loaded checkpoint '{}' (epoch {})"
               .format(args.resume, checkpoint['epoch']))
-        print("=> Loaded model Prec1 = %0.2f%%"%best_prec1.item())
+        print("=> Loaded model Prec1 = %0.2f%%"%best_prec1)
     else:
         print("=> no checkpoint found at '{}'".format(args.resume))
 
