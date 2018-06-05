@@ -23,8 +23,8 @@ data_train = np.genfromtxt("./" + sys.argv[-1]) #sys.argv[-1] looks at last term
 epochs = data_train[:,0] 
 loss_train = data_train[:,3]
 loss_dev = data_dev[:,2]
-acc_train = data_train[:,5]
-acc_dev = data_dev[:,4] 
+acc_train = data_train[:,4]
+acc_dev = data_dev[:,3] 
 
 #Loss vs. Epoch
 plt.figure(1)
