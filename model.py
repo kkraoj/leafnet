@@ -41,8 +41,8 @@ classes = []
 # ARGS Parser
 # when you don't want to pass a checkpoint: --resume ""
 parser = argparse.ArgumentParser(description='PyTorch LeafSnap Training')
-parser.add_argument('--resume', required = False, type=str, metavar='PATH',
-                    help='path to latest checkpoint (default: none)')
+parser.add_argument('--resume', required = True, type=str, metavar='PATH',
+                    help='path to latest checkpoint (type '' for none)')
 parser.add_argument('--modelid', required = True, type=int, metavar='MODEL_ID',
                     help='1(resnet18), 2(VGG16), 3(resnet101), 4(densenet121)')
 args = parser.parse_args()
@@ -52,12 +52,12 @@ MODEL_ID = args.modelid
 def selectModel(MODEL_ID):
     if MODEL_ID == 1:
         BATCH_SIZE = 128
-        NUM_EPOCHS = 250
-        LEARNING_RATE = 1e-5 #start from learning rate after 40 epochs
+        NUM_EPOCHS = 100
+        LEARNING_RATE = 1e-1 #start from learning rate after 40 epochs
         ALPHA = 6
         model = models.resnet18(pretrained=False)
         model.fc = nn.Linear(512, NUM_CLASSES)
-        modelName = "resnet18"
+        modelName = "resnet18_decay"
     elif MODEL_ID == 2:
         # BATCH_SIZE = 128
         # NUM_EPOCHS = 250
@@ -228,7 +228,7 @@ def save_checkpoint(state, is_best, filename='checkpoint.pth.tar'):
 
 def adjust_learning_rate(optimizer, epoch):
     """Sets the learning rate to the initial LR decayed by 10 every 30 epochs"""
-    lr = LEARNING_RATE ** (epoch // ALPHA)
+    lr = LEARNING_RATE*0.1** (epoch // ALPHA)
     if (lr <= 0.0001): # cap the learning rate to be larger than e-4
         lr = 0.0001
     print('\n[Learning Rate] {:0.6f}'.format(lr))
