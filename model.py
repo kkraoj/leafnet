@@ -57,31 +57,33 @@ def selectModel(MODEL_ID):
         ALPHA = 6
         model = models.resnet18(pretrained=False)
         model.fc = nn.Linear(512, NUM_CLASSES)
-        modelName = "resnet18_decay"
+        modelName = "resnet18_decay_adam"
     elif MODEL_ID == 2:
-        # BATCH_SIZE = 128
-        # NUM_EPOCHS = 250
-        # LEARNING_RATE = 1e-5 #start from learning rate after 40 epochs
-        # ALPHA = 6
+        BATCH_SIZE = 128
+        NUM_EPOCHS = 50
+        LEARNING_RATE = 1e-1 #start from learning rate after 40 epochs
+        ALPHA = 6
         model = models.VGG('VGG16')
-        # model.fc = nn.Linear(512, NUM_CLASSES)
+        #model.fc = nn.Linear(512, NUM_CLASSES)
         modelName = "VGG16"
     elif MODEL_ID == 3:
-        # BATCH_SIZE = 128
-        # NUM_EPOCHS = 250
-        # LEARNING_RATE = 1e-5 #start from learning rate after 40 epochs
-        # ALPHA = 6
-        model = models.resnet101()
+        BATCH_SIZE = 64
+        NUM_EPOCHS = 100
+        LEARNING_RATE = 1e-0 #start from learning rate after 40 epochs
+        ALPHA = 10
+        model = models.resnet50()
         model.fc = nn.Linear(2048, NUM_CLASSES)
-        modelName = "resnet101"
-    else:
+        modelName = "resnet50"
+    elif MODEL_ID ==4:
         BATCH_SIZE = 8
-        # NUM_EPOCHS = 250
-        # LEARNING_RATE = 1e-5 #start from learning rate after 40 epochs
-        # ALPHA = 6
+        NUM_EPOCHS = 100
+        LEARNING_RATE = 1e-1 #start from learning rate after 40 epochs
+        ALPHA = 6
         model = models.densenet121()
-        # model.fc = nn.Linear(512, NUM_CLASSES)
+        model.fc = nn.Linear(512, NUM_CLASSES)
         modelName = "densenet121"
+    else:
+        raise ValueError('Model ID must be 1,2,3 or 4')
     return model, modelName, BATCH_SIZE, NUM_EPOCHS, LEARNING_RATE, ALPHA
 
 # Create data file with header
@@ -286,9 +288,9 @@ if USE_CUDA:
     model = torch.nn.DataParallel(model).cuda()
     criterion = criterion.cuda()
 optimizer = optim.SGD(model.parameters(), lr=LEARNING_RATE,
-                      momentum=0.9, weight_decay=1e-4, nesterov=True)
+                     momentum=0.9, weight_decay=1e-4, nesterov=True)
 #optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, betas=(0.9, 0.999), 
-#                       eps=1e-08, weight_decay=1e-4)
+#                       eps=1e-08, weight_decay=1e-2)
 
 if args.resume:
     if os.path.isfile(args.resume):
