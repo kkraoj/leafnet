@@ -32,9 +32,10 @@ plt.subplot(1,2,1)
 plt.plot(epochs,loss_train,label='train')
 plt.plot(epochs,loss_dev,label='dev')
 plt.legend(loc='best')
-plt.xticks(range(1, 1 + int(max(epochs))))
+# plt.xticks(range(1, 1 + int(max(epochs))))
 plt.xlabel('Epoch')
 plt.ylabel('Loss')
+plt.tight_layout()
 plt.title('Loss vs. Epoch')
 
 #Accuracy vs. Epoch
@@ -42,9 +43,10 @@ plt.subplot(1,2,2)
 plt.plot(epochs, acc_train,label='train')
 plt.plot(epochs,acc_dev,label='dev')
 plt.legend(loc='best')
-plt.xticks(range(1, 1 + int(max(epochs))))
+# plt.xticks(range(1, 1 + int(max(epochs))))
 plt.xlabel('Epoch')
 plt.ylabel('Accuracy')
+plt.tight_layout()
 plt.title('Accuracy vs. Epoch')
 
 #Show and save
