@@ -262,6 +262,9 @@ def accuracy(output, target, topk=(1,), path = None, minibatch = None):
     if path:
         filename = [os.path.basename(p) for p in path]
         true_label = [os.path.basename(os.path.dirname(p)) for p in path]
+        ##debugging for densenet
+        print('pred[0] = %s'%pred[0])
+        ## end debugging		
         pred_label = [classes[p] for p in pred[0]]
         data = np.array([filename, true_label, pred_label])
         out = pd.DataFrame(data.T,columns =['filename', 'true_label','pred_label'])
