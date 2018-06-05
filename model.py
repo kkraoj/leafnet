@@ -83,7 +83,7 @@ def selectModel(MODEL_ID):
         model.fc = nn.Linear(512, NUM_CLASSES)
         modelName = "densenet121"
     elif MODEL_ID == 5:
-        BATCH_SIZE = 8
+        BATCH_SIZE = 128
         NUM_EPOCHS = 100
         LEARNING_RATE = 1e-1 #start from learning rate after 40 epochs
         ALPHA = 6
