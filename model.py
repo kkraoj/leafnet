@@ -74,7 +74,7 @@ def selectModel(MODEL_ID):
         model = models.resnet50()
         model.fc = nn.Linear(2048, NUM_CLASSES)
         modelName = "resnet50"
-    elif MODEL_ID ==4:
+    elif MODEL_ID == 4:
         BATCH_SIZE = 8
         NUM_EPOCHS = 100
         LEARNING_RATE = 1e-1 #start from learning rate after 40 epochs
@@ -82,8 +82,15 @@ def selectModel(MODEL_ID):
         model = models.densenet121()
         model.fc = nn.Linear(512, NUM_CLASSES)
         modelName = "densenet121"
+    elif MODEL_ID == 5:
+        BATCH_SIZE = 8
+        NUM_EPOCHS = 100
+        LEARNING_RATE = 1e-1 #start from learning rate after 40 epochs
+        ALPHA = 6
+        model = nn.Linear(224*224*3, NUM_CLASSES)
+        modelName = "logisticRegression"
     else:
-        raise ValueError('Model ID must be 1,2,3 or 4')
+        raise ValueError('Model ID must be 1,2,3,4,5')
     return model, modelName, BATCH_SIZE, NUM_EPOCHS, LEARNING_RATE, ALPHA
 
 # Create data file with header
