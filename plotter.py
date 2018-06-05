@@ -2,12 +2,18 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
-# from matplotlib import rc 
-# rc('text', usetex=True) #requires installing Latex (install or comment out)
-						  #sudo apt-get install texlive-full
+from matplotlib import rc 
+rc('text', usetex=True) #requires installing Latex (install or comment out)
+						#sudo apt-get install texlive-full
 
 #TO RUN THIS SCRIPT: 
 #      $python plotter.py dataAndPlots/fileName_dev.txt dataAndPlots/fileName_train.txt
+
+#-----------------------------------------------------------------------------------------------
+#Plots made so far:
+# python3 plotter.py dataAndPlots/20180604-081431_dev_resnet18_224.txt dataAndPlots/20180604-081431_train_resnet18_224.txt
+# python3 plotter.py dataAndPlots/20180605-010950_dev_resnet18_decay_224.txt dataAndPlots/20180605-010950_train_resnet18_decay_224.txt
+#-----------------------------------------------------------------------------------------------
 
 #This file will generate the following plots and 
 #store them in the folder "dataAndPlots" with 
