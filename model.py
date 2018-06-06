@@ -52,13 +52,13 @@ MODEL_ID = args.modelid
 def selectModel(MODEL_ID):
     if MODEL_ID == 1:
         BATCH_SIZE = 128
-        NUM_EPOCHS = 72
+        NUM_EPOCHS = 100
         LEARNING_RATE = 1e-1 #start from learning rate after 40 epochs
         ALPHA = 6
         model = models.resnet18(pretrained=False)
         model.fc = nn.Linear(512, NUM_CLASSES) #nn.Linear(input_size, num_classes)
-        modelName = "resnet18_decay"
-    if MODEL_ID == 2:
+        modelName = "resnet18_augment"
+    elif MODEL_ID == 2:
         BATCH_SIZE = 128
         NUM_EPOCHS = 72
         LEARNING_RATE = 1e-1 #start from learning rate after 40 epochs
@@ -325,7 +325,7 @@ if args.resume:
         print("=> no checkpoint found at '{}'".format(args.resume))
 
 print('\n[INFO] Reading Training and Testing Dataset')
-traindir = os.path.join('dataset', 'train_%d'%INPUT_SIZE)
+traindir = os.path.join('dataset', 'train_%d_augment'%INPUT_SIZE)
 testdir = os.path.join('dataset', 'test_%d'%INPUT_SIZE)
 normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                  std=[0.229, 0.224, 0.225])
