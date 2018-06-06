@@ -57,8 +57,16 @@ def selectModel(MODEL_ID):
         ALPHA = 6
         model = models.resnet18(pretrained=False)
         model.fc = nn.Linear(512, NUM_CLASSES) #nn.Linear(input_size, num_classes)
+        modelName = "resnet18_decay"
+    if MODEL_ID == 2:
+        BATCH_SIZE = 128
+        NUM_EPOCHS = 72
+        LEARNING_RATE = 1e-1 #start from learning rate after 40 epochs
+        ALPHA = 6
+        model = models.resnet18(pretrained=False)
+        model.fc = nn.Linear(512, NUM_CLASSES) #nn.Linear(input_size, num_classes)
         modelName = "resnet18_decay_adam"
-    elif MODEL_ID == 2:
+    elif MODEL_ID == 3:
         BATCH_SIZE = 128
         NUM_EPOCHS = 50
         LEARNING_RATE = 1e-1 #start from learning rate after 40 epochs
@@ -66,7 +74,7 @@ def selectModel(MODEL_ID):
         model = models.VGG('VGG16')
         model.fc = nn.Linear(512, NUM_CLASSES)
         modelName = "VGG16"
-    elif MODEL_ID == 3:
+    elif MODEL_ID == 4:
         BATCH_SIZE = 64
         NUM_EPOCHS = 100
         LEARNING_RATE = 1e-0 #start from learning rate after 40 epochs
@@ -74,7 +82,7 @@ def selectModel(MODEL_ID):
         model = models.resnet50()
         model.fc = nn.Linear(2048, NUM_CLASSES)
         modelName = "resnet50"
-    elif MODEL_ID == 4:
+    elif MODEL_ID == 5:
         BATCH_SIZE = 8
         NUM_EPOCHS = 100
         LEARNING_RATE = 1e-1 #start from learning rate after 40 epochs
@@ -82,16 +90,15 @@ def selectModel(MODEL_ID):
         model = models.densenet121()
         model.fc = nn.Linear(512, NUM_CLASSES)
         modelName = "densenet121"
-    elif MODEL_ID == 5:
+    elif MODEL_ID == 6:
         BATCH_SIZE = 128
         NUM_EPOCHS = 100
         LEARNING_RATE = 1e-1 #start from learning rate after 40 epochs
         ALPHA = 6
-        # model = nn.Linear(224*224*3, NUM_CLASSES) #error size mismatch, m1: [86016 x 224], m2: [150528 x 185] at /opt/conda/conda-bld/pytorch_1524586445097/work/aten/src/THC/generic/THCTensorMathBlas.cu:249
-        model = nn.Linear(86016, 224)
+        model = nn.Linear(224*224*3, NUM_CLASSES) #error size mismatch, m1: [86016 x 224], m2: [150528 x 185] at /opt/conda/conda-bld/pytorch_1524586445097/work/aten/src/THC/generic/THCTensorMathBlas.cu:249
         modelName = "logisticRegression"
     else:
-        raise ValueError('Model ID must be 1,2,3,4,5')
+        raise ValueError('Model ID must be an integer between 1 and 6')
     return model, modelName, BATCH_SIZE, NUM_EPOCHS, LEARNING_RATE, ALPHA
 
 # Create data file with header
@@ -298,10 +305,10 @@ criterion = nn.CrossEntropyLoss()
 if USE_CUDA:
     model = torch.nn.DataParallel(model).cuda()
     criterion = criterion.cuda()
-# optimizer = optim.SGD(model.parameters(), lr=LEARNING_RATE,
-#                      momentum=0.9, weight_decay=1e-4, nesterov=True)
-optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, betas=(0.9, 0.999), 
-                      eps=1e-08, weight_decay=1e-4)
+optimizer = optim.SGD(model.parameters(), lr=LEARNING_RATE,
+                     momentum=0.9, weight_decay=1e-4, nesterov=True)
+# optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, betas=(0.9, 0.999), 
+#                       eps=1e-08, weight_decay=1e-4)
 
 if args.resume:
     if os.path.isfile(args.resume):
