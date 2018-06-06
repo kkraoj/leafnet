@@ -301,7 +301,7 @@ if USE_CUDA:
 # optimizer = optim.SGD(model.parameters(), lr=LEARNING_RATE,
 #                      momentum=0.9, weight_decay=1e-4, nesterov=True)
 optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, betas=(0.9, 0.999), 
-                      eps=1e-08, weight_decay=1e-2)
+                      eps=1e-08, weight_decay=1e-4)
 
 if args.resume:
     if os.path.isfile(args.resume):
