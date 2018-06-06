@@ -56,7 +56,7 @@ def selectModel(MODEL_ID):
         LEARNING_RATE = 1e-1 #start from learning rate after 40 epochs
         ALPHA = 6
         model = models.resnet18(pretrained=False)
-        model.fc = nn.Linear(512, NUM_CLASSES)
+        model.fc = nn.Linear(512, NUM_CLASSES) #nn.Linear(input_size, num_classes)
         modelName = "resnet18_decay_adam"
     elif MODEL_ID == 2:
         BATCH_SIZE = 128
@@ -87,7 +87,8 @@ def selectModel(MODEL_ID):
         NUM_EPOCHS = 100
         LEARNING_RATE = 1e-1 #start from learning rate after 40 epochs
         ALPHA = 6
-        model = nn.Linear(224*224*3, NUM_CLASSES)
+        # model = nn.Linear(224*224*3, NUM_CLASSES) #error size mismatch, m1: [86016 x 224], m2: [150528 x 185] at /opt/conda/conda-bld/pytorch_1524586445097/work/aten/src/THC/generic/THCTensorMathBlas.cu:249
+        model = nn.Linear(86016, 224)
         modelName = "logisticRegression"
     else:
         raise ValueError('Model ID must be 1,2,3,4,5')
