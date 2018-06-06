@@ -64,7 +64,7 @@ def selectModel(MODEL_ID):
         LEARNING_RATE = 1e-1 #start from learning rate after 40 epochs
         ALPHA = 6
         model = models.VGG('VGG16')
-        #model.fc = nn.Linear(512, NUM_CLASSES)
+        model.fc = nn.Linear(512, NUM_CLASSES)
         modelName = "VGG16"
     elif MODEL_ID == 3:
         BATCH_SIZE = 64
