@@ -16,6 +16,7 @@ rc('text', usetex=True) #requires installing Latex (install or comment out)
 # (7 epochs) python3 plotter.py dataAndPlots/20180605-061011_dev_resnet18_decay_adam_224.txt dataAndPlots/20180605-061011_train_resnet18_decay_adam_224.txt
 # python3 plotter.py dataAndPlots/20180605-075524_dev_resnet50_224.txt dataAndPlots/20180605-075524_train_resnet50_224.txt
 # python3 plotter.py dataAndPlots/20180606-010128_dev_resnet18_decay_adam_224.txt dataAndPlots/20180606-010128_train_resnet18_decay_adam_224.txt
+# python3 plotter.py dataAndPlots/20180606-120447_dev_resnet18_decay_16.txt dataAndPlots/20180606-120447_train_resnet18_decay_16.txt
 #-----------------------------------------------------------------------------------------------
 
 #This file will generate the following plots and 
