@@ -52,7 +52,7 @@ MODEL_ID = args.modelid
 def selectModel(MODEL_ID):
     if MODEL_ID == 1:
         BATCH_SIZE = 128
-        NUM_EPOCHS = 100
+        NUM_EPOCHS = 72
         LEARNING_RATE = 1e-1 #start from learning rate after 40 epochs
         ALPHA = 6
         model = models.resnet18(pretrained=False)
@@ -298,10 +298,10 @@ criterion = nn.CrossEntropyLoss()
 if USE_CUDA:
     model = torch.nn.DataParallel(model).cuda()
     criterion = criterion.cuda()
-optimizer = optim.SGD(model.parameters(), lr=LEARNING_RATE,
-                     momentum=0.9, weight_decay=1e-4, nesterov=True)
-#optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, betas=(0.9, 0.999), 
-#                       eps=1e-08, weight_decay=1e-2)
+# optimizer = optim.SGD(model.parameters(), lr=LEARNING_RATE,
+#                      momentum=0.9, weight_decay=1e-4, nesterov=True)
+optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE, betas=(0.9, 0.999), 
+                      eps=1e-08, weight_decay=1e-2)
 
 if args.resume:
     if os.path.isfile(args.resume):
