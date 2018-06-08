@@ -66,9 +66,9 @@ def test(test_loader, model, criterion):
 
         # measure accuracy and record loss
         prec1, prec5 = accuracy(output.data, target, topk=(1, 5))
-        _, predicted = torch.max(output.data, 1)
+        value, predicted = torch.max(output.data, 1)
 #        print('\nGroundTruth: ', ' '.join('%5s' % classes[target_var.item()]))
-        print('Predicted: ', ''.join('%5s' % classes[predicted.item()]))
+        print('Species: ', ''.join('%5s' % classes[predicted.item()]), 'Confidence: %0.2f%%'%value,)
         losses.update(loss.item(), input.size(0))
         top1.update(prec1.item(), input.size(0))
         top5.update(prec5.item(), input.size(0))
