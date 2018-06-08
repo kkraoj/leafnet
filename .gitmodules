@@ -1,0 +1,3 @@
+[submodule "hangoutsbot"]
+	path = hangoutsbot
+	url = https://github.com/kkraoj/hangoutsbot.git
