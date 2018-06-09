@@ -35,10 +35,10 @@ INPUT_SIZE = 224
 NUM_CLASSES = 185
 USE_CUDA = torch.cuda.is_available()
 best_prec1 = 0
-saved_model = "D:/Krishna/DL/Deep-Leafsnap/saved_models/model_best_augment.pth.tar"
-testdir = 'D:/Krishna/DL/Deep-Leafsnap/dataset/iphonedir/'
+saved_model = "D:/Krishna/DL/leafnet/saved_models/model_best_augment.pth.tar"
+testdir = 'D:/Krishna/DL/leafnet/dataset/iphonedir/'
 
-def download_image(pic_url, image_loc = 'D:/Krishna/DL/Deep-Leafsnap/dataset/iphonedir/unknown/example.jpg'):
+def download_image(pic_url, image_loc = 'D:/Krishna/DL/leafnet/dataset/iphonedir/unknown/example.jpg'):
 
     with open(image_loc, 'wb') as handle:
         response = requests.get(pic_url, stream=True)
@@ -87,10 +87,19 @@ def test(test_loader, model, criterion, classes):
             input_var = torch.autograd.Variable(input)
         output = model(input_var)
 
-        confidence, predicted = torch.max(output.data, 1)
-        label = classes[predicted.item()]
-        confidence = int(confidence.item())
-    return label, confidence
+#        confidence, predicted = torch.max(output.data, 1)
+#        label = classes[predicted.item()]
+#        confidence = int(confidence.item())
+    
+        yhat = np.array(torch.nn.Softmax()(output.data))[0]
+        yhat[yhat<0.3] = 0.
+        counts = len(yhat[yhat>0])
+        labels = yhat.argsort()[-counts:][::-1]
+        labels = [classes[label] for label in labels]
+        confidences = 100*np.sort(yhat)[-counts:][::-1]
+        confidences = confidences.astype(int)
+        
+    return labels, confidences
 
 def accuracy(output, target, topk=(1,)):
     """Computes the precision@k for the specified values of k"""
@@ -133,7 +142,7 @@ def setup_model():
         print("=> no checkpoint found at '{}'".format(saved_model))
     
     #print('\n[INFO] Reading Training and Testing Dataset')
-    traindir = "D:/Krishna/DL/Deep-Leafsnap/dataset/train_224"
+    traindir = "D:/Krishna/DL/leafnet/dataset/train_224"
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                      std=[0.229, 0.224, 0.225])
     data_train = datasets.ImageFolder(traindir)
@@ -153,7 +162,7 @@ def predict_leaf(pic_url):
     resize_image(image_loc)
     test_loader, model, criterion, classes = setup_model()
     
-    label, confidence = test(test_loader, model, criterion, classes)
-    return label, confidence
+    labels, confidences = test(test_loader, model, criterion, classes)
+    return labels, confidences
 #if __name__ == '__main__':
 #    main()
