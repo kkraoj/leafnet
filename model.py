@@ -91,7 +91,7 @@ def selectModel(MODEL_ID):
         model.fc = nn.Linear(512, NUM_CLASSES)
         modelName = "densenet121"
     elif MODEL_ID == 6:
-        BATCH_SIZE = 256
+        BATCH_SIZE = 1024
         NUM_EPOCHS = 100
         LEARNING_RATE = 1e-1 #start from learning rate after 40 epochs
         ALPHA = 6
@@ -139,7 +139,9 @@ def train(train_loader, model, criterion, optimizer, epoch):
 
         input_var = torch.autograd.Variable(input)
         target_var = torch.autograd.Variable(target)
-
+        if MODEL_ID ==6:
+            ##flatten input for logistic
+            input_var = input_var.view(-1,INPUT_SIZE*INPUT_SIZE*3)
         # compute output
         output = model(input_var)
         loss = criterion(output, target_var)
@@ -203,6 +205,10 @@ def validate(val_loader, model, criterion):
             target_var = torch.autograd.Variable(target)
 
         # compute output
+        if MODEL_ID ==6:
+            ##flatten input for logistic
+            input_var = input_var.view(-1,INPUT_SIZE*INPUT_SIZE*3)
+
         output = model(input_var)
         loss = criterion(output, target_var)
 
