@@ -74,14 +74,9 @@ def resize_image(image_loc, res = 224):
     
     
 def test(test_loader, model, criterion, classes):
-    batch_time = AverageMeter()
-    losses = AverageMeter()
-    top1 = AverageMeter()
-    top5 = AverageMeter()
     # switch to evaluate mode
     model.eval()
 
-    end = time.time()
     for i, (input, target) in enumerate(test_loader):
         with torch.no_grad(): 
             input_var = torch.autograd.Variable(input)
@@ -94,11 +89,13 @@ def test(test_loader, model, criterion, classes):
         yhat = np.array(torch.nn.Softmax()(output.data))[0]
         yhat[yhat<0.3] = 0.
         counts = len(yhat[yhat>0])
-        labels = yhat.argsort()[-counts:][::-1]
-        labels = [classes[label] for label in labels]
-        confidences = 100*np.sort(yhat)[-counts:][::-1]
-        confidences = confidences.astype(int)
-        
+        if counts == 0:
+            labels = []; confidences = []
+        else:
+            labels = yhat.argsort()[-counts:][::-1]
+            labels = [classes[label] for label in labels]
+            confidences = 100*np.sort(yhat)[-counts:][::-1]
+            confidences = confidences.astype(int)
     return labels, confidences
 
 def accuracy(output, target, topk=(1,)):
