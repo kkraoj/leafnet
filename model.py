@@ -97,7 +97,9 @@ def selectModel(MODEL_ID):
         ALPHA = 6
         model = nn.Sequential()
         model.add_module("linear", torch.nn.Linear(224*224*3, NUM_CLASSES, bias=False))
-        # model = nn.Linear(224*224*3, NUM_CLASSES) #error size mismatch, m1: [86016 x 224], m2: [150528 x 185] at /opt/conda/conda-bld/pytorch_1524586445097/work/aten/src/THC/generic/THCTensorMathBlas.cu:249
+        # RuntimeError: size mismatch, m1: [172032 x 224], m2: [150528 x 185] at /opt/conda/conda-bld/pytorch_1524586445097/work/aten/src/THC/generic/THCTensorMathBlas.cu:249
+        # model = nn.Linear(224*224*3, NUM_CLASSES) 
+        #error size mismatch, m1: [86016 x 224], m2: [150528 x 185] at /opt/conda/conda-bld/pytorch_1524586445097/work/aten/src/THC/generic/THCTensorMathBlas.cu:249
         modelName = "logisticRegression"
     else:
         raise ValueError('Model ID must be an integer between 1 and 6')
