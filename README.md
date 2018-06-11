@@ -6,7 +6,7 @@ Understanding and preserving worldwide biodiversity is central to addressing cha
 |---------------|:--------------:|:--------------:|
 |    Leafsnap   |      70.8%     |      96.8%     |
 | Deep-Leafsnap |      86.2%     |      98.4%     |
-| Leafnet       |      93.8%     |      99.5%     |
+| **Leafnet**   |    **93.8%**   |    **99.5%**   |
 
 We noticed that our model failed to recognize specific classes of trees constantly causing our overall precision to derease. This is primarily due to the fact that those trees had very small leaves (like pines) which were hard to preprocess and crop.
 
