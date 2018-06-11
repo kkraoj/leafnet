@@ -77,3 +77,14 @@ To train the model, run
 ```
 python model.py
 ```
+
+## Setting up your own hangouts bot
+To set up your own hangouts bot such as the one running on leafnetstanford@gmail.com,
+From root directory of leafnet, 
+
+```
+git submodule add -b v3.0 https://github.com/kkraoj/hangoutsbot.git ./
+```
+After adding the hangoutsbot as a submodule, follow the initial setup instructions in [hangousbot readme](https://github.com/kkraoj/hangoutsbot/tree/v3.0).
+
+
