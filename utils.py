@@ -28,7 +28,7 @@ def rotate(image, angle):
     return cv2.warpAffine(image, M, (nW, nH))
 
 
-def load_image_and_preprocess(path, segmented_path):
+def load_image_and_preprocess(path, segmented_path, resolution = 16):
     # Open image from disk
     image = misc.imread(path.strip())
     segmented_image = misc.imread(segmented_path.strip())
@@ -81,7 +81,7 @@ def load_image_and_preprocess(path, segmented_path):
 
     # Use the rectangle to crop on original image
     img = image[top_y:bottom_y, left_x:right_x]
-    img = misc.imresize(img, (224, 224))
+    img = misc.imresize(img, (resolution, resolution))
     return img
 
 

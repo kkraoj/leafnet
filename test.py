@@ -26,12 +26,10 @@ from torch.autograd import Variable
 from torch.utils.data import sampler
 from torchvision import datasets
 from torchvision import transforms
-
+    
 # GLOBAL CONSTANTS
 INPUT_SIZE = 224
 NUM_CLASSES = 185
-NUM_EPOCHS = 35
-LEARNING_RATE = 1e-1
 USE_CUDA = torch.cuda.is_available()
 best_prec1 = 0
 classes = []
@@ -40,6 +38,8 @@ classes = []
 parser = argparse.ArgumentParser(description='PyTorch LeafSnap Training')
 parser.add_argument('--resume', default='', type=str, metavar='PATH',
                     help='path to latest checkpoint (default: none)')
+parser.add_argument('--testdata', required = True, type=str, metavar='DATA_FOLDER',
+                    help='path to test data')
 args = parser.parse_args()
 
 # Test method
@@ -48,9 +48,6 @@ def test(test_loader, model, criterion):
     losses = AverageMeter()
     top1 = AverageMeter()
     top5 = AverageMeter()
-    class_correct = list(0. for i in range(185))
-    class_total = list(0. for i in range(185))
-
     # switch to evaluate mode
     model.eval()
 
@@ -59,8 +56,9 @@ def test(test_loader, model, criterion):
         if USE_CUDA:
             input = input.cuda(async=True)
             target = target.cuda(async=True)
-        input_var = torch.autograd.Variable(input, volatile=True)
-        target_var = torch.autograd.Variable(target, volatile=True)
+        with torch.no_grad(): 
+            input_var = torch.autograd.Variable(input)
+            target_var = torch.autograd.Variable(target)
 
         # compute output
         output = model(input_var)
@@ -68,28 +66,16 @@ def test(test_loader, model, criterion):
 
         # measure accuracy and record loss
         prec1, prec5 = accuracy(output.data, target, topk=(1, 5))
-        _, predicted = torch.max(output.data, 1)
-        print('\nGroundTruth: ', ' '.join('%5s' % classes[target_var[0][0]]))
-        print('Predicted: ', ' '.join('%5s' % classes[predicted[0][0]]))
-        losses.update(loss.data[0], input.size(0))
-        top1.update(prec1[0], input.size(0))
-        top5.update(prec5[0], input.size(0))
+        value, predicted = torch.max(output.data, 1)
+#        print('\nGroundTruth: ', ' '.join('%5s' % classes[target_var.item()]))
+        print('Species: ', ''.join('%5s' % classes[predicted.item()]), 'Confidence: %0.2f%%'%value,)
+        losses.update(loss.item(), input.size(0))
+        top1.update(prec1.item(), input.size(0))
+        top5.update(prec5.item(), input.size(0))
 
         # measure elapsed time
         batch_time.update(time.time() - end)
         end = time.time()
-
-        if i % 10 == 0:
-            print('Test: [{0}/{1}]\t'
-                  'Time {batch_time.val:.3f} ({batch_time.avg:.3f})\t'
-                  'Loss {loss.val:.4f} ({loss.avg:.4f})\t'
-                  'Prec@1 {top1.val:.3f} ({top1.avg:.3f})\t'
-                  'Prec@5 {top5.val:.3f} ({top5.avg:.3f})'.format(
-                      i, len(test_loader), batch_time=batch_time, loss=losses,
-                      top1=top1, top5=top5))
-
-    print(' * Prec@1 {top1.avg:.3f} Prec@5 {top5.avg:.3f}'
-          .format(top1=top1, top5=top5))
 
     return top1.avg
 
@@ -108,64 +94,55 @@ def accuracy(output, target, topk=(1,)):
         res.append(correct_k.mul_(100.0 / batch_size))
     return res
 
-print('\n[INFO] Creating Model')
-model = models.resnet101(pretrained=False)
-model.fc = nn.Linear(2048, 185)
+#print('\n[INFO] Creating Model')
+model = models.resnet18(pretrained=False)
+model.fc = nn.Linear(512, 185)
 
 criterion = nn.CrossEntropyLoss()
 if USE_CUDA:
     model = torch.nn.DataParallel(model).cuda()
     criterion = criterion.cuda()
-optimizer = optim.SGD(model.parameters(), lr=LEARNING_RATE,
-                      momentum=0.9, weight_decay=1e-4, nesterov=True)
-
-checkpoint = torch.load('model_best.pth.tar')
-best_prec1 = checkpoint['best_prec1']
-model.load_state_dict(checkpoint['state_dict'])
-optimizer.load_state_dict(checkpoint['optimizer'])
-print('\n[INFO] Model Architecture: \n{}'.format(model))
 
 if args.resume:
     if os.path.isfile(args.resume):
-        print("=> loading checkpoint '{}'".format(args.resume))
-        checkpoint = torch.load(args.resume)
+#        print("=> loading checkpoint '{}'".format(args.resume))
+        checkpoint = torch.load(args.resume, map_location = 'cpu')
         args.start_epoch = checkpoint['epoch']
         best_prec1 = checkpoint['best_prec1']
-        model.load_state_dict(checkpoint['state_dict'])
-        optimizer.load_state_dict(checkpoint['optimizer'])
-        print("=> loaded checkpoint '{}' (epoch {})"
-              .format(args.resume, checkpoint['epoch']))
+        
+        state_dict = checkpoint['state_dict']
+        
+        from collections import OrderedDict
+        new_state_dict = OrderedDict()
+        
+        for k, v in state_dict.items():
+            name = k[7:] # remove `module.`
+            new_state_dict[name] = v
+        model.load_state_dict(new_state_dict)        
+#        print("=> loaded checkpoint '{}' (epoch {})"
+#              .format(args.resume, checkpoint['epoch']))
     else:
         print("=> no checkpoint found at '{}'".format(args.resume))
 
-print('\n[INFO] Reading Training and Testing Dataset')
-traindir = os.path.join('dataset', 'train')
-testdir = os.path.join('dataset', 'test')
-iphonedir = os.path.join('dataset', 'iphone')
+#print('\n[INFO] Reading Training and Testing Dataset')
+traindir = os.path.join('dataset', 'train_224')
+print(args.testdata)
+testdir = args.testdata
 normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                  std=[0.229, 0.224, 0.225])
-data_train = datasets.ImageFolder(traindir, transforms.Compose([
-    transforms.RandomHorizontalFlip(),
-    transforms.ToTensor(),
-    normalize]))
+data_train = datasets.ImageFolder(traindir)
 data_test = datasets.ImageFolder(testdir, transforms.Compose([
-    transforms.ToTensor(),
-    normalize]))
-iphone_test = datasets.ImageFolder(iphonedir, transforms.Compose([
-    transforms.ToTensor(),
-    normalize]))
+            transforms.ToTensor(),
+            normalize,
+#            Resize(size = (16,16)),
+            ]))
 classes = data_train.classes
 
-train_loader = torch.utils.data.DataLoader(data_train, batch_size=64, shuffle=True, num_workers=2)
-test_loader = torch.utils.data.DataLoader(data_test, batch_size=64, shuffle=False, num_workers=2)
-iphone_loader = torch.utils.data.DataLoader(iphone_test, batch_size=64, shuffle=False, num_workers=2)
+test_loader = torch.utils.data.DataLoader(data_test, batch_size=1, shuffle=False, num_workers=0)
 
-print('\n[INFO] Testing on Original Test Data Started')
+#print('\n[INFO] Testing on Original Test Data Started')
 prec1 = test(test_loader, model, criterion)
-print(prec1)
-
-print('\n[INFO] Testing on iPhone Test Data Started')
-prec1 = test(iphone_loader, model, criterion)
-print(prec1)
+#print(prec1)
 
 print('\n[DONE]')
+

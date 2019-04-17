@@ -1,21 +1,27 @@
-# Deep-Leafsnap
+# <img src="f52.green.w.png" width="5%"> Leafnet
 
-Convolutional Neural Networks have become largely popular in image tasks such as image classification recently largely due to to Krizhevsky, et al. in their famous paper [ImageNet Classification with Deep Convolutional Neural Networks](https://papers.nips.cc/paper/4824-imagenet-classification-with-deep-convolutional-neural-networks). Famous models such as AlexNet, VGG-16, ResNet-50, etc. have scored state of the art results on image classfication datasets such as ImageNet and CIFAR-10.
+Understanding and preserving worldwide biodiversity is central to addressing challenges associated with resilience to climate change and reducing the impact of greenhouse gases. Amidst growing threats to biodiversity - such as deforestation, overexploitation, or pollution - species conservation becomes increasingly important. Plant species identification - a fundamental first step to quantifying biodiversity - can be challenging for both researchers and the general public. Therefore, the ability to reliably and easily identify plant species holds great potential to increase knowledge accesssibility as well as facilitate greater collective ability to protect the environment. With this goal in mind we designed an algorithm that takes as an input an RGB leaf image. We then used a ResNet18 to classify the image into 1 of 185 classes corresponding to its species. The model was tuned for various hyperparameters to achieve an overall top-1 precision of 93.8\% on the dev set which is higher than any previously known model. The final model is hosted on a remote server and allows anyone to use the classifier for free by logging into Google Hangouts and opening a chat with leafnetstanford@gmail.com.
 
-We present an application of CNN's to the task of classifying trees by images of their leaves; specifically all 185 types of trees in the United States. This task proves to be difficult for traditional computer vision methods due to the high number of classes, inconsistency in images, and large visual similarity between leaves.
-
-Kumar, et al. developed a automatic visual recognition algorithm in their 2012 paper [Leafsnap: A Computer Vision System for Automatic Plant Species Identification](http://neerajkumar.org/base/papers/nk_eccv2012_leafsnap.pdf) to attempt to solve this problem.
-
-Our model is based off VGG-16 except modified to work with `64x64` size inputs. We achieved state of the art results at the time. Our deep learning approach to this problem further improves the accuracy from `70.8%` to `86.2%` for the top-1 prediction accuracy and from `96.8%` to `98.4%` for top-5 prediction accuracy.
-
-|               | Top-1 Accuracy | Top-5 Accuracy |
+|               | Top-1 Precision| Top-5 Precision|
 |---------------|:--------------:|:--------------:|
 |    Leafsnap   |      70.8%     |      96.8%     |
 | Deep-Leafsnap |      86.2%     |      98.4%     |
+| **Leafnet**   |    **93.8%**   |    **99.5%**   |
 
-We noticed that our model failed to recognize specific classes of trees constantly causing our overall accuracy to derease. This is primarily due to the fact that those trees had very small leaves which were hard to preprocess and crop. Our training images were also resized to `64x64` due to limited computational resources. We plan on further improving our data preprocessing and increasing our image size to `224x224` in order to exceed `90%` for our top-1 prediction acurracy.
+We noticed that our model failed to recognize specific classes of trees constantly causing our overall precision to derease. This is primarily due to the fact that those trees had very small leaves (like pines) which were hard to preprocess and crop.
 
-The following goes over the code and how to set it up on your own machine.
+The following goes over the code and how to set it up on your own machine <presented verbatim from the original [Deep-Leafsnap repository](https://github.com/sujithv28/Deep-Leafsnap). 
+
+## Try it now!
+
+Leafnet is available for free via a remote server based system. All you need is an app called Google Hangouts. Follow these steps to use the prediction bot:
+* Iphone users: install [Google hangouts](https://itunes.apple.com/us/app/hangouts/id643496868?mt=8). Android devices have it by default
+* Start a chat with leafnetstanford@gmail.com
+* Say _"Hi bot"_
+* That's it! Send as many pictures of tree leaves on white background and find their species now!
+
+
+![User Example](hangouts_screenshot.png) 
 
 ## Files
 * `model.py` trains a convolutional neural network on the dataset.
@@ -53,11 +59,7 @@ python
 import cv2
 ```
 Download Leafsnap's image data and extract it to the main directory by running in the directory. Original data can be found [here](http://leafsnap.com/dataset/).
-```
-wget https://www.dropbox.com/s/dp3sk8wpiu9yszg/data.zip?dl=0
-unzip -a data.zip?dl=0
-rm data.zip?dl=0
-```
+
 
 ## Create the Training and Testing Data
 To create the dataset, run
@@ -69,5 +71,16 @@ This cleans the dataset by cropping only neccesary portions of the images contai
 ## Training Model
 To train the model, run
 ```
-python model.py
+python model.py --modelid 1 --resume ''
 ```
+
+## Setting up your own hangouts bot
+To set up your own hangouts bot such as the one running on leafnetstanford@gmail.com,
+From root directory of leafnet, 
+
+```
+git submodule add -b v3.0 https://github.com/kkraoj/hangoutsbot.git ./
+```
+After adding the hangoutsbot as a submodule, follow the initial setup instructions in [hangousbot readme](https://github.com/kkraoj/hangoutsbot/tree/v3.0).
+
+
