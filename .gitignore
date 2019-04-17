@@ -18,4 +18,4 @@ leafsnap-dataset-test-images.csv
 *.pyc
 *.tar
 *.pth
-
+.~lock.predicted_labels.csv#
