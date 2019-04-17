@@ -1,5 +1,10 @@
 dataset/
 trained_models/
+leafnet_old_archive/
+flavia_original/
+poster/
+dataset_compiled/
+hangoutsbot/
 __MACOSX/
 # leafsnap-dataset-images.csv
 leafsnap-dataset-images.txt
