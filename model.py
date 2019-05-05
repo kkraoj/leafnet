@@ -1,6 +1,4 @@
 import argparse
-import cv2
-import json
 import numpy as np
 import os
 import pandas as pd
@@ -13,11 +11,10 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.nn.parallel
 import torch.optim as optim
-import torchvision
 import torchvision.models as models
 
 from PIL import Image
-from averagemeter import *
+from averagemeter import AverageMeter
 from models import *
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
@@ -188,8 +185,8 @@ def validate(val_loader, model, criterion):
     losses = AverageMeter()
     top1 = AverageMeter()
     top5 = AverageMeter()
-    class_correct = list(0. for i in range(NUM_CLASSES))
-    class_total = list(0. for i in range(NUM_CLASSES))
+#    class_correct = list(0. for i in range(NUM_CLASSES))
+#    class_total = list(0. for i in range(NUM_CLASSES))
 
     # switch to evaluate mode
     model.eval()

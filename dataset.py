@@ -1,13 +1,9 @@
 import cv2
-import json
 import numpy as np
 import os
 import pandas as pd
-import random
 import scipy.misc
-import time
 import utils
-
 from IPython.display import display
 from PIL import Image
 from scipy import integrate
@@ -19,15 +15,17 @@ from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 
 # GLOBAL CONSTANTS
-DATA_FILE = 'leafsnap-dataset-images.csv'
+DATA_SOURCE = 'leafsnap'
 NUM_CLASSES = 185
 RESOLUTION = 224
-bad_lab_species = set(['Abies concolor', 'Abies nordmanniana', 'Picea pungens', 'Picea orientalis',
-                       'Picea abies', 'Cedrus libani', 'Cedrus atlantica', 'Cedrus deodara',
-                       'Juniperus virginiana', 'Tsuga canadensis', 'Larix decidua', 'Pseudolarix amabilis'])
+ROT_ANGLE = 45 #cnagle by which to rotate augmented images in training set
+#bad_lab_species = set(['Abies concolor', 'Abies nordmanniana', 'Picea pungens', 'Picea orientalis',
+#                       'Picea abies', 'Cedrus libani', 'Cedrus atlantica', 'Cedrus deodara',
+#                       'Juniperus virginiana', 'Tsuga canadensis', 'Larix decidua', 'Pseudolarix amabilis'])
 
 columns = ['file_id', 'image_pat', 'segmented_path', 'species', 'source']
-data = pd.read_csv(DATA_FILE, names=columns, header=1)
+data_file = '{}-dataset-images.csv'.format(DATA_SOURCE)
+data = pd.read_csv(data_file, names=columns, header=1)
 
 # Drop bad image samples
 bad_indices = []
@@ -55,10 +53,7 @@ species_classes_test = sorted(set(species_test))
 
 print('\n[INFO]  Training Samples : {:5d}'.format(len(images_train['original'])))
 print('\tTesting Samples  : {:5d}'.format(len(images_test['original'])))
-
-
 print('[INFO] Processing Images')
-
 
 def save_images(images, species, directory='train', csv_name='temp.csv', augment=False):
     cropped_images = []
@@ -87,7 +82,7 @@ def save_images(images, species, directory='train', csv_name='temp.csv', augment
             count += 1
 
             if augment:
-                angle = 90
+                angle = ROT_ANGLE
                 while angle < 360:
                     rotated_image = utils.rotate(image, angle)
 
@@ -100,21 +95,21 @@ def save_images(images, species, directory='train', csv_name='temp.csv', augment
                     cropped_images.append(rotated_image)
                     image_species.append(species[index])
 
-                    angle += 90
+                    angle += ROT_ANGLE
                     count += 1
 
         if index > 0 and index % 1000 == 0:
             print('[INFO] Processed {:5d} images'.format(index))
 
     print('[INFO] Final Number of {} Samples: {}'.format(directory, len(image_paths)))
-    raw_data = {'image_paths': image_paths,
-                'species': image_species}
+#    raw_data = {'image_paths': image_paths,
+#                'species': image_species}
     # df = pd.DataFrame(raw_data, columns = ['image_paths', 'species'])
     # df.to_csv(csv_name)
 
-save_images(images_train, species_train, directory='train_%d'%RESOLUTION,
-            csv_name='leafsnap-dataset-train-images.csv', augment=False)
-save_images(images_test, species_test, directory='test_%d'%RESOLUTION,
+save_images(images_train, species_train, directory='train',
+            csv_name='leafsnap-dataset-train-images.csv', augment=True)
+save_images(images_test, species_test, directory='test',
             csv_name='leafsnap-dataset-test-images.csv', augment=False)
 
 print('\n[DONE]')

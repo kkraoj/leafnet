@@ -1,11 +1,8 @@
 import argparse
-import cv2
-import json
 import numpy as np
 import os
 import pandas as pd
 import scipy.misc
-import shutil
 import time
 import torch
 import torch.backends.cudnn as cudnn
@@ -13,12 +10,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.nn.parallel
 import torch.optim as optim
-import torchvision
 import torchvision.models as models
-import utils
-
 from PIL import Image
-from averagemeter import *
+from averagemeter import AverageMeter
 from models import *
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
