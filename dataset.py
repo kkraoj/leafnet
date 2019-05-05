@@ -18,26 +18,16 @@ from sklearn.model_selection import train_test_split
 DATA_SOURCE = 'leafsnap'
 NUM_CLASSES = 185
 RESOLUTION = 224
-ROT_ANGLE = 45 #cnagle by which to rotate augmented images in training set
-#bad_lab_species = set(['Abies concolor', 'Abies nordmanniana', 'Picea pungens', 'Picea orientalis',
-#                       'Picea abies', 'Cedrus libani', 'Cedrus atlantica', 'Cedrus deodara',
-#                       'Juniperus virginiana', 'Tsuga canadensis', 'Larix decidua', 'Pseudolarix amabilis'])
+ROT_ANGLE = 90 #cnagle by which to rotate augmented images in training set
 
 columns = ['file_id', 'image_pat', 'segmented_path', 'species', 'source']
 data_file = '{}-dataset-images.csv'.format(DATA_SOURCE)
 data = pd.read_csv(data_file, names=columns, header=1)
 
-# Drop bad image samples
-bad_indices = []
-bad_lab_species_pattern = '|'.join(bad_lab_species)
-for i in range(len(data)):
-    if ((data.get_value(i, 'species') in bad_lab_species_pattern) and (data.get_value(i, 'source').lower() in 'lab')):
-        bad_indices.append(i)
-data.drop(data.index[bad_indices], inplace=True)
+test_df = data.loc[data.source=='field'].sample(frac=0.5, random_state=7)
+## fraction increased because lab images are only 7k
+train_df = data.drop(test_df.index)
 
-# Split train test
-train_df = data.sample(frac=0.80, random_state=7)
-test_df = data.drop(train_df.index)
 
 images_train_original = train_df['image_pat'].tolist()
 images_train_segmented = train_df['segmented_path'].tolist()
@@ -55,7 +45,9 @@ print('\n[INFO]  Training Samples : {:5d}'.format(len(images_train['original']))
 print('\tTesting Samples  : {:5d}'.format(len(images_test['original'])))
 print('[INFO] Processing Images')
 
-def save_images(images, species, directory='train', csv_name='temp.csv', augment=False):
+def save_images(images, species, data_source = DATA_SOURCE,  directory='train', \
+                csv_name='temp.csv', augment=False):
+    os.chdir('dataset_all/{}'.format(data_source))
     cropped_images = []
     image_species = []
     image_paths = []
@@ -88,7 +80,7 @@ def save_images(images, species, directory='train', csv_name='temp.csv', augment
 
                     file_name = '{}.jpg'.format(count)
                     image_to_write = cv2.cvtColor(rotated_image, cv2.COLOR_RGB2BGR)
-                    #cv2.imwrite(os.path.join(image_dir, file_name), image_to_write)
+                    cv2.imwrite(os.path.join(image_dir, file_name), image_to_write)
                     result = Image.fromarray((image_to_write).astype(np.uint8))
                     result.save(os.path.join(image_dir, file_name))
                     image_paths.append(os.path.join(image_dir, file_name))
@@ -102,11 +94,11 @@ def save_images(images, species, directory='train', csv_name='temp.csv', augment
             print('[INFO] Processed {:5d} images'.format(index))
 
     print('[INFO] Final Number of {} Samples: {}'.format(directory, len(image_paths)))
-#    raw_data = {'image_paths': image_paths,
-#                'species': image_species}
-    # df = pd.DataFrame(raw_data, columns = ['image_paths', 'species'])
-    # df.to_csv(csv_name)
-
+    raw_data = {'image_paths': image_paths,
+                'species': image_species}
+    df = pd.DataFrame(raw_data, columns = ['image_paths', 'species'])
+    df.to_csv(csv_name)
+#os.chdir(r'D:\Krishna\DL\leafnet')
 save_images(images_train, species_train, directory='train',
             csv_name='leafsnap-dataset-train-images.csv', augment=True)
 save_images(images_test, species_test, directory='test',
