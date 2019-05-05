@@ -20,6 +20,8 @@ NUM_CLASSES = 185
 RESOLUTION = 224
 ROT_ANGLE = 90 #cnagle by which to rotate augmented images in training set
 
+
+
 columns = ['file_id', 'image_pat', 'segmented_path', 'species', 'source']
 data_file = '{}-dataset-images.csv'.format(DATA_SOURCE)
 data = pd.read_csv(data_file, names=columns, header=1)
@@ -45,9 +47,9 @@ print('\n[INFO]  Training Samples : {:5d}'.format(len(images_train['original']))
 print('\tTesting Samples  : {:5d}'.format(len(images_test['original'])))
 print('[INFO] Processing Images')
 
-def save_images(images, species, data_source = DATA_SOURCE,  directory='train', \
+os.chdir('dataset_all/{}'.format(DATA_SOURCE))
+def save_images(images, species,  directory='train', \
                 csv_name='temp.csv', augment=False):
-    os.chdir('dataset_all/{}'.format(data_source))
     cropped_images = []
     image_species = []
     image_paths = []
@@ -80,7 +82,7 @@ def save_images(images, species, data_source = DATA_SOURCE,  directory='train', 
 
                     file_name = '{}.jpg'.format(count)
                     image_to_write = cv2.cvtColor(rotated_image, cv2.COLOR_RGB2BGR)
-                    cv2.imwrite(os.path.join(image_dir, file_name), image_to_write)
+    #                    cv2.imwrite(os.path.join(image_dir, file_name), image_to_write)
                     result = Image.fromarray((image_to_write).astype(np.uint8))
                     result.save(os.path.join(image_dir, file_name))
                     image_paths.append(os.path.join(image_dir, file_name))
@@ -99,8 +101,8 @@ def save_images(images, species, data_source = DATA_SOURCE,  directory='train', 
     df = pd.DataFrame(raw_data, columns = ['image_paths', 'species'])
     df.to_csv(csv_name)
 #os.chdir(r'D:\Krishna\DL\leafnet')
-save_images(images_train, species_train, directory='train',
-            csv_name='leafsnap-dataset-train-images.csv', augment=True)
+#save_images(images_train, species_train, directory='train',
+#            csv_name='leafsnap-dataset-train-images.csv', augment=True)
 save_images(images_test, species_test, directory='test',
             csv_name='leafsnap-dataset-test-images.csv', augment=False)
 

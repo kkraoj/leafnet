@@ -110,3 +110,4 @@ def paths_to_images(image_paths, species, augment_data=False):
         count += 1
 
     return np.array(batch_images), np.array(batch_species)
+
