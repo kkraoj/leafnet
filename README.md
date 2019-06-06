@@ -13,6 +13,7 @@ We noticed that our model failed to recognize specific classes of trees constant
 The following goes over the code and how to set it up on your own machine <presented verbatim from the original [Deep-Leafsnap repository](https://github.com/sujithv28/Deep-Leafsnap). 
 
 ## Try it now!
+**Note: Leafnet bot was taken down in Jan-2019 because I cannot afford to keep my server running. If you are interested in using Leafnet for scientific or educational purposes, create a new issue for this repository and I will switch on Leafnet for you.**
 
 Leafnet is available for free via a remote server based system. All you need is an app called Google Hangouts. Follow these steps to use the prediction bot:
 * Iphone users: install [Google hangouts](https://itunes.apple.com/us/app/hangouts/id643496868?mt=8). Android devices have it by default
